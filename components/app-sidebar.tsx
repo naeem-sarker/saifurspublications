@@ -2,11 +2,9 @@
 
 import * as React from "react"
 import {
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
   ImagePlus,
   Layers,
+  LayoutDashboard,
   Package,
   PenTool,
   ShoppingBag,
@@ -26,28 +24,22 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Md Naeem Sarker",
+    email: "naeemsarker@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
+  team:
+  {
+    name: "Saifurs Publications",
+    logo: "/saifurs.svg",
+    plan: "Admin Panel",
+  },
   projects: [
+    {
+      name: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
+    },
     {
       name: "Users",
       url: "/users",
@@ -75,7 +67,7 @@ const data = {
     },
     {
       name: "Heroes",
-      url: "/heroes",
+      url: "/heros",
       icon: ImagePlus,
     },
   ],
@@ -85,7 +77,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher team={data.team} />
       </SidebarHeader>
       <SidebarContent>
         <NavProjects projects={data.projects} />
