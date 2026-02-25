@@ -1,18 +1,24 @@
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 
+import { getAuthors } from "@/actions/authorActions"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
-import { getAuthors } from "@/actions/authorActions"
 
-async function getData() {
-  const res = await getAuthors();
+const Authors = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) => {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Math.max(1, Number(resolvedSearchParams.page || 1));
 
-  return res.data;
-}
+  const limit = Math.max(50, Number(resolvedSearchParams.limit || 20));;
 
-const Authors = async () => {
-  const data = await getData()
+  const res = await getAuthors(currentPage, limit);
+
+  const data = res.data || [];
+
   return (
     <div>
       <div className='flex justify-between mb-4'>
@@ -23,7 +29,8 @@ const Authors = async () => {
         </Button>
       </div>
 
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={data} pageCount={res.meta?.totalPages || 1}
+        currentPage={currentPage} />
     </div>
   )
 }

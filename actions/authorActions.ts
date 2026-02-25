@@ -96,20 +96,43 @@ export const createAuthor = async (formData: FormData) => {
     }
 }
 
-export const getAuthors = async () => {
+export const getAuthors = async (page: number = 1, limit: number = 10) => {
     try {
-        const authors = await prisma.author.findMany({ orderBy: { createdAt: "desc" } })
+        const SAFE_LIMIT = Math.min(Math.max(1, limit), 50);
+
+        const totalCount = await prisma.author.count();
+        const totalPages = Math.ceil(totalCount / SAFE_LIMIT) || 1;
+
+        let currentPage = Math.max(1, page);
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const skip = (currentPage - 1) * SAFE_LIMIT;
+
+        const authors = await prisma.author.findMany({
+            skip: skip,
+            take: SAFE_LIMIT,
+            orderBy: { createdAt: 'desc' },
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                avatarUrl: true,
+                isActive: true,
+            }
+        });
 
         return {
             success: true,
-            data: authors
-        }
+            data: authors,
+            meta: {
+                totalCount,
+                totalPages,
+                currentPage
+            }
+        };
     } catch (error) {
-        console.log(error)
-        return {
-            success: false,
-            message: "Failed to fetch authors"
-        }
+        console.error("Critical Error:", error);
+        return { success: false, message: "Internal Server Error" };
     }
 }
 
