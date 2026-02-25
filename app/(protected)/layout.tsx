@@ -45,7 +45,7 @@ export default function Page({
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="flex flex-1 flex-col gap-4 py-8 px-18">
           {children}
         </div>
       </SidebarInset>
