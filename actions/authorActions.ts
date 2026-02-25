@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 
 export const createAuthor = async (data) => {
     try {
-        const { name, slug, description } = data;
+        const { name, slug, description, isActive } = data;
 
         if (!name || !slug) {
             return {
@@ -30,7 +30,8 @@ export const createAuthor = async (data) => {
             data: {
                 name,
                 slug,
-                description
+                description,
+                isActive
             }
         })
 
@@ -57,6 +58,27 @@ export const createAuthor = async (data) => {
 export const getAuthors = async () => {
     try {
         const authors = await prisma.author.findMany()
+
+        return {
+            success: true,
+            data: authors
+        }
+    } catch (error) {
+        console.log(error)
+        return {
+            success: false,
+            message: "Failed to fetch authors"
+        }
+    }
+}
+
+export const getPublicAuthors = async () => {
+    try {
+        const authors = await prisma.author.findMany({
+            where: {
+                isActive: true
+            }
+        })
 
         return {
             success: true,

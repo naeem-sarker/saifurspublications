@@ -37,37 +37,37 @@ const data = {
   projects: [
     {
       name: "Dashboard",
-      url: "/dashboard",
+      url: "/admin",
       icon: LayoutDashboard,
     },
     {
       name: "Users",
-      url: "/users",
+      url: "/admin/users",
       icon: Users2,
     },
     {
       name: "Authors",
-      url: "/authors",
+      url: "/admin/authors",
       icon: PenTool,
     },
     {
       name: "Categories",
-      url: "/categories",
+      url: "/admin/categories",
       icon: Layers,
     },
     {
       name: "Products",
-      url: "/products",
+      url: "/admin/products",
       icon: Package,
     },
     {
       name: "Orders",
-      url: "/orders",
+      url: "/admin/orders",
       icon: ShoppingBag,
     },
     {
       name: "Heroes",
-      url: "/heros",
+      url: "/admin/heros",
       icon: ImagePlus,
     },
   ],
