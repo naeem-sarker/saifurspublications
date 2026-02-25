@@ -1,6 +1,6 @@
 "use server"
 
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile, mkdir, unlink } from "fs/promises";
 import path from "path";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -113,6 +113,32 @@ export const getAuthors = async () => {
     }
 }
 
+export const getAuthroBySlug = async (slug: string) => {
+    try {
+        const author = await prisma.author.findUnique({
+            where: { id: slug }
+        })
+
+        if (!author) {
+            return {
+                success: false,
+                message: "Author not found"
+            }
+        }
+
+        return {
+            success: true,
+            data: author
+        }
+    } catch (error) {
+        console.log(error)
+        return {
+            success: false,
+            message: "Failed to fetch author"
+        }
+    }
+}
+
 export const getPublicAuthors = async () => {
     try {
         const authors = await prisma.author.findMany({
@@ -134,26 +160,81 @@ export const getPublicAuthors = async () => {
         }
     }
 }
-//     const file = formData.get("avatarUrl") as File;
-//     if (!file) return { success: false, message: "No file uploaded" };
 
-//     const bytes = await file.arrayBuffer();
-//     const buffer = Buffer.from(bytes);
+export const updateAuthor = async (id: string, formData: FormData) => {
+    try {
+        const name = formData.get("name") as string;
+        const slug = formData.get("slug") as string;
+        const description = formData.get("description") as string;
+        const isActive = formData.get("isActive") === "true";
+        const file = formData.get("image") as File;
 
-//     const uploadDir = path.join(process.cwd(), "public/uploads/authors");
+        const currentAuthor = await prisma.author.findUnique({
+            where: { id }
+        });
 
-//     try {
-//         await mkdir(uploadDir, { recursive: true });
-//     } catch (err) {
-//         return { success: false, message: "Failed to create upload directory" };
-//     }
+        if (!currentAuthor) return { success: false, message: "Author not found" };
 
-//     const fileName = `${Date.now()}-${file.name}`;
-//     const filePath = path.join(uploadDir, fileName);
+        if (!name || !slug) {
+            return {
+                success: false,
+                message: "Name and slug are required"
+            }
+        }
 
-//     await writeFile(filePath, buffer);
+        const existingSlug = await prisma.author.findUnique({
+            where: {
+                slug: slug
+            }
+        })
 
-//     const dbPath = `/uploads/authors/${fileName}`;
+        if (existingSlug && existingSlug.id !== id) {
+            return {
+                success: false,
+                message: "Author with this slug already exists"
+            }
+        }
 
-//     return { success: true, url: dbPath };
-// };
+        let dbImagePath = currentAuthor.avatarUrl;
+
+        if (file && file.size > 0) {
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+
+            const uploadDir = path.join(process.cwd(), "public/uploads/authors");
+            await mkdir(uploadDir, { recursive: true });
+
+            const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}.webp`;
+            const filePath = path.join(uploadDir, fileName);
+
+            await sharp(buffer)
+                .resize(500, 500, { fit: "cover" })
+                .webp({ quality: 80 })
+                .toBuffer()
+                .then(data => writeFile(filePath, data));
+
+            dbImagePath = `/uploads/authors/${fileName}`;
+
+            if (currentAuthor.avatarUrl) {
+                const oldPath = path.join(process.cwd(), "public", currentAuthor.avatarUrl);
+                await unlink(oldPath).catch(err => console.log("Old file not found, skipping delete"));
+            }
+        }
+
+        await prisma.author.update({
+            where: { id },
+            data: {
+                name,
+                slug,
+                description,
+                isActive,
+                avatarUrl: dbImagePath
+            }
+        });
+
+        revalidatePath("/admin/authors");
+        return { success: true, message: "Author updated successfully" };
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+}

@@ -6,19 +6,16 @@ import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
 import Image from "next/image"
-import { Upload, X, CheckCircle2 } from "lucide-react"
+import { Upload, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group"
-import { createAuthor } from "@/actions/authorActions"
+import { createAuthor, updateAuthor } from "@/actions/authorActions"
 import { redirect } from "next/navigation"
-
-const MAX_FILE_SIZE = 2 * 1024 * 1024;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),
@@ -30,18 +27,18 @@ const formSchema = z.object({
     isActive: z.boolean().default(true),
 })
 
-export function AuthorForm() {
-    const [preview, setPreview] = React.useState<string | null>(null)
+export function AuthorForm({ initialData }: { initialData?: any }) {
+    const [preview, setPreview] = React.useState<string | null>(initialData?.avatarUrl || null)
     const fileInputRef = React.useRef<HTMLInputElement>(null)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
-            slug: "",
-            description: "",
-            avatarUrl: "",
-            isActive: true,
+            name: initialData?.name || "",
+            slug: initialData?.slug || "",
+            description: initialData?.description || "",
+            avatarUrl: initialData?.avatarUrl || "",
+            isActive: initialData !== undefined ? initialData.isActive : true,
         },
     })
 
@@ -77,7 +74,7 @@ export function AuthorForm() {
             formData.append("image", fileInputRef.current.files[0]);
         }
 
-        const res = await createAuthor(formData);
+        const res = initialData ? await updateAuthor(initialData.id, formData) : await createAuthor(formData);
 
         if (res.success) {
             toast.success(res.message)
@@ -219,7 +216,7 @@ export function AuthorForm() {
                     form="author-form"
                     className="min-w-[120px] shadow-md shadow-primary/20"
                 >
-                    Save Author
+                    {initialData ? "Update Author" : "Save Author"}
                 </Button>
             </CardFooter>
         </Card>

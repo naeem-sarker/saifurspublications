@@ -9,7 +9,7 @@ const AddAuthor = () => {
                 <h1 className='text-2xl'>Add Author</h1>
 
                 <Button asChild>
-                    <Link href="/authors">Back</Link>
+                    <Link href="/admin/authors">Back</Link>
                 </Button>
             </div>
 
