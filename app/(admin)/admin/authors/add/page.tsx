@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Link } from 'lucide-react'
-import { AuthorForm } from './AuthorForm'
+import { AuthorForm } from '../../_components/authors/AuthorForm'
 
 const AddAuthor = () => {
     return (

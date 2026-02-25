@@ -19,7 +19,7 @@ const Authors = async () => {
         <h1 className='text-2xl'>Authors</h1>
 
         <Button asChild>
-          <Link href="/authors/add">Add Author</Link>
+          <Link href="/admin/authors/add">Add Author</Link>
         </Button>
       </div>
 

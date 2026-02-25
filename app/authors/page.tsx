@@ -19,9 +19,9 @@ const Authors = async () => {
                             className="group relative transition-all duration-300 ease-in-out"
                         >
                             <div className="flex justify-center mb-4">
-                                {author.image ? (
+                                {author.avatarUrl ? (
                                     <Image
-                                        src={author.image}
+                                        src={author.avatarUrl}
                                         alt={author.name}
                                         width={96}
                                         height={96}
