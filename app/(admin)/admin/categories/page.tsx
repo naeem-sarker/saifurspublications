@@ -19,7 +19,7 @@ const Categories = async () => {
         <h1 className='text-2xl'>Categories</h1>
 
         <Button asChild>
-          <Link href="/categories/add">Add Category</Link>
+          <Link href="/admin/categories/add">Add Category</Link>
         </Button>
       </div>
 
