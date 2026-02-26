@@ -2,6 +2,7 @@
 
 import { Search, ShoppingBag, Menu, User } from 'lucide-react'
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState, useEffect } from 'react'
 
 const Navbar = () => {
@@ -26,9 +27,9 @@ const Navbar = () => {
             const fullText = searchKeywords[i];
 
             setPlaceholderText(
-                isDeleting 
-                ? fullText.substring(0, placeholderText.length - 1) 
-                : fullText.substring(0, placeholderText.length + 1)
+                isDeleting
+                    ? fullText.substring(0, placeholderText.length - 1)
+                    : fullText.substring(0, placeholderText.length + 1)
             );
 
             // টাইপিং স্পিড কন্ট্রোল
@@ -37,7 +38,7 @@ const Navbar = () => {
             // পুরো শব্দ লেখা শেষ হলে একটু থামবে, তারপর মুছতে শুরু করবে
             if (!isDeleting && placeholderText === fullText) {
                 setTimeout(() => setIsDeleting(true), 2000); // ২ সেকেন্ড অপেক্ষা
-            } 
+            }
             // পুরো শব্দ মুছে গেলে পরের শব্দে যাবে
             else if (isDeleting && placeholderText === '') {
                 setIsDeleting(false);
@@ -51,20 +52,19 @@ const Navbar = () => {
 
     return (
         <nav className='sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm'>
-            <div className='container mx-auto px-4 md:px-8 py-3'>
+            <div className='max-w-[1224px] mx-auto px-4 md:px-0 py-2'>
                 <div className='flex items-center justify-between gap-4'>
-                    
-                    {/* Brand / Logo Section */}
-                    <div className='flex flex-col select-none cursor-pointer'>
-                        <Image src={"/saifurs.svg"} width={84} height={84}  alt='Saifurs Publications'/>
-                    </div>
+
+                    <Link href="/" className='flex flex-col select-none cursor-pointer'>
+                        <Image src={"/saifurs.svg"} width={64} height={64} alt='Saifurs Publications' />
+                    </Link>
 
                     {/* Search Section - Hidden on small mobile, visible on larger screens */}
                     <div className='hidden md:flex flex-1 max-w-md mx-auto'>
                         <div className='relative w-full group'>
-                            <input 
-                                type="text" 
-                                placeholder={placeholderText} 
+                            <input
+                                type="text"
+                                placeholder={placeholderText}
                                 className='w-full bg-gray-100 text-gray-700 text-sm rounded-full py-2.5 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:bg-white border border-transparent focus:border-red-200 transition-all duration-300 placeholder:text-gray-400'
                             />
                             <button className='absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white rounded-full text-gray-400 shadow-sm hover:text-red-500 transition-colors'>
@@ -95,7 +95,7 @@ const Navbar = () => {
                         <button className='hidden sm:flex p-2 text-gray-700 hover:bg-gray-100 rounded-full transition-colors'>
                             <User size={22} />
                         </button>
-                        
+
                         {/* Mobile Menu Button */}
                         <button className='sm:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-full'>
                             <Menu size={22} />
