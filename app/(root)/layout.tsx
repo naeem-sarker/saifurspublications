@@ -1,3 +1,4 @@
+import FloatingContact from "@/components/common/FloatingContact";
 import Footer from "@/components/common/Footer";
 import Navbar from "@/components/common/Navbar";
 
@@ -13,6 +14,7 @@ export default function RootLayout({
         {children}
       </div>
       <Footer />
+      <FloatingContact />
     </div>
   );
 }
