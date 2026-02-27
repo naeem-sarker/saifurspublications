@@ -2,17 +2,14 @@ import { getProductsFromPublic } from '@/actions/productActions'
 import { CarouselDemo } from '@/components/common/CarouselDemo';
 import HeroSectionImageOnly from '@/components/common/HeroSection';
 import { OnlyCarousel } from '@/components/common/OnlyCarousel';
-import PopularBooks from '@/components/common/PopularBooks';
 import Link from 'next/link';
-import React from 'react'
 
 const Home = async () => {
   const resPopularProducts = await getProductsFromPublic("isPopular", "");
   const res = await getProductsFromPublic("", "english");
-  console.log(res)
   
   return (
-    <div>
+    <div className='max-w-7xl mx-auto'>
       <HeroSectionImageOnly />
 
       <div className="py-10 px-4 md:px-0">

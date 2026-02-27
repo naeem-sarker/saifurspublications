@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Carousel,
@@ -15,7 +14,7 @@ import { toBengaliNumber } from "@/lib/numberConvert"
 import Image from "next/image"
 
 export function CarouselDemo({ data }) {
-  if (!data || data.length === 0) return null; // data না থাকলে কিছু দেখাবে না
+  if (!data || data.length === 0) return null;
 
   return (
     <Carousel

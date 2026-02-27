@@ -10,9 +10,9 @@ export default function RootLayout({
   return (
     <div>
       <Navbar />
-      <div className="max-w-[1224px] mx-auto">
+      
         {children}
-      </div>
+      
       <Footer />
       <FloatingContact />
     </div>
