@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 export const syncUserWithDB = async (firebaseUser) => {
     try {
         const { uid, email, displayName, photoUrl } = firebaseUser;
+        console.log(firebaseUser, "firebaseUser")
 
         const user = await prisma.user.upsert({
             where: { uid: uid },

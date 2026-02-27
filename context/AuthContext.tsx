@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
                     uid: firebaseUser.uid,
                     email: firebaseUser.email,
                     displayName: firebaseUser.displayName,
-                    photoURL: firebaseUser.photoURL,
+                    photoUrl: firebaseUser.photoURL,
                 };
 
                 await syncUserWithDB(userData);
