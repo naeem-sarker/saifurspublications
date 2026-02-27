@@ -1,6 +1,7 @@
 import React from 'react';
 import { Facebook, Youtube, Instagram, Phone, MapPin, Mail, Clock } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -21,12 +22,13 @@ const Footer = () => {
           {/* Quick Links Grid */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h4 className="text-white font-semibold mb-4">বইসমূহ</h4>
+              <h4 className="text-white font-semibold mb-4">প্রয়োজনীয় লিঙ্ক</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-red-500 transition">Spoken English</a></li>
-                <li><a href="#" className="hover:text-red-500 transition">IELTS Books</a></li>
-                <li><a href="#" className="hover:text-red-500 transition">BCS Preliminary</a></li>
-                <li><a href="#" className="hover:text-red-500 transition">Bank Job</a></li>
+                <li><Link href="/products?filter=spoken" className="hover:text-red-500 transition">স্পোকেন ইংলিশ</Link></li>
+                <li><Link href="/products?filter=ielts" className="hover:text-red-500 transition">আইইলটিএস</Link></li>
+                <li><Link href="/products?filter=academic" className="hover:text-red-500 transition">একাডেমিক</Link></li>
+                <li><Link href="/products?filter=jobs" className="hover:text-red-500 transition">জব&apos;স</Link></li>
+                <li><Link href="/authors" className="hover:text-red-500 transition">লেখক</Link></li>
               </ul>
             </div>
             <div>

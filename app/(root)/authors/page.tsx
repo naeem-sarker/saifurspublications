@@ -8,7 +8,7 @@ const Authors = async () => {
     return (
         <div className="max-w-7xl mx-auto px-4 py-12">
             <div className="mb-10 text-center">
-                <h1 className="text-2xl font-bold text-gray-700 mb-2">Authors</h1>
+                <h1 className="text-2xl font-bold text-gray-700 mb-2">লেখকবিন্দু</h1>
             </div>
 
             {authors.length > 0 ? (
