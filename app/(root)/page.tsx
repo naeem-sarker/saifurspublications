@@ -1,13 +1,54 @@
 import { getProductsFromPublic } from '@/actions/productActions'
+import { CarouselDemo } from '@/components/common/CarouselDemo';
+import HeroSectionImageOnly from '@/components/common/HeroSection';
+import { OnlyCarousel } from '@/components/common/OnlyCarousel';
 import PopularBooks from '@/components/common/PopularBooks';
+import Link from 'next/link';
 import React from 'react'
 
 const Home = async () => {
-const res = await getProductsFromPublic();
-console.log(res)
+  const resPopularProducts = await getProductsFromPublic("isPopular", "");
+  const res = await getProductsFromPublic("", "english");
+  console.log(res)
+  
   return (
     <div>
-      <PopularBooks data={res.data}/>
+      <HeroSectionImageOnly />
+
+      <div className="py-10 px-4 md:px-0">
+        <div className="flex justify-between items-end mb-6">
+          <h3 className="text-xl font-bold text-gray-800">
+            জনপ্রিয় বইসমূহ
+          </h3>
+
+          <Link
+            href="/products?sort=popular"
+            className="bg-red-500 text-white py-2 px-4 font-semibold text-xs rounded-sm hover:bg-red-600 transition-colors"
+          >
+            সবগুলো বই দেখুন
+          </Link>
+        </div>
+
+        <CarouselDemo data={resPopularProducts.data} />
+      </div>
+
+
+      <div className="py-10 px-4 md:px-0">
+        <div className="flex justify-between items-end mb-6">
+          <h3 className="text-xl font-bold text-gray-800">
+            একাডেমিক বইসমূহ
+          </h3>
+
+          <Link
+            href="/products?sort=popular"
+            className="bg-red-500 text-white py-2 px-4 font-semibold text-xs rounded-sm hover:bg-red-600 transition-colors"
+          >
+            সবগুলো বই দেখুন
+          </Link>
+        </div>
+
+        <OnlyCarousel data={res.data} />
+      </div>
     </div>
   )
 }

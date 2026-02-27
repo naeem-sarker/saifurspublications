@@ -19,10 +19,6 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import {
-    InputGroup,
-    InputGroupTextarea,
-} from "@/components/ui/input-group"
 import { redirect } from "next/navigation"
 import { createCategory } from "@/actions/categoryActions"
 
@@ -47,7 +43,7 @@ export function CategoryForm() {
         if (res.success) {
             toast.success(res.message)
             form.reset()
-            redirect("/categories")
+            redirect("/admin/categories")
         } else {
             toast.error(res.message)
         }

@@ -1,6 +1,6 @@
 "use server"
 
-import prisma from "@/lib/prisma"
+import prisma from "@/lib/prisma";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { revalidatePath } from "next/cache";
 import path from "path";
@@ -85,15 +85,41 @@ export const createProduct = async (formData: FormData) => {
     }
 }
 
-export const getProducts = async () => {
+export const getProducts = async (page: number = 1, limit: number = 10) => {
     try {
+        const SAFE_LIMIT = Math.min(Math.max(1, limit), 50);
+
+        const totalCount = await prisma.author.count();
+        const totalPages = Math.ceil(totalCount / SAFE_LIMIT) || 1;
+
+        let currentPage = Math.max(1, page);
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        const skip = (currentPage - 1) * SAFE_LIMIT;
+
         const products = await prisma.product.findMany({
+            skip: skip,
+            take: SAFE_LIMIT,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                isStock: true,
+                regularPrice: true,
+            },
             orderBy: { createdAt: 'desc' }
         });
 
         return {
             success: true,
-            data: products
+            data: products,
+            meta: {
+                totalCount,
+                totalPages,
+                currentPage
+            }
         }
 
     } catch (error) {
@@ -105,15 +131,35 @@ export const getProducts = async () => {
     }
 }
 
-export const getProductsFromPublic = async () => {
+export const getProductsFromPublic = async (filterType: string, categorySlug: string) => {
     try {
-        const products = await prisma.product.findMany();
+        const query: Record<string, any> = {
+            isActive: true
+        };
+
+        if (filterType) {
+            query[filterType] = true;
+        }
+
+        if (categorySlug) {
+            query.categories = {
+                some: {
+                    slug: categorySlug
+                }
+            };
+        }
+
+        const products = await prisma.product.findMany({ where: query });
         return {
             success: true,
             data: products
         }
     } catch (error) {
-
+        console.log(error);
+        return {
+            success: false,
+            message: "Internal server error"
+        }
     }
 }
 
@@ -244,23 +290,25 @@ export const updateProduct = async (id: string, formData: FormData) => {
 
 export const getProductByPublic = async (slug: string) => {
     try {
-        const product = await prisma.product.findUnique({ where: { slug, isActive: true }, select: {
-            name: true,
-            slug: true,
-            edition: true,
-            totalPage: true,
-            coverImg: true,
-            pdfUrl: true,
-            regularPrice: true,
-            salePrice: true,
-            discountRate: true,
-            authors: {
-                select: {
-                    name: true,
-                    slug: true
+        const product = await prisma.product.findUnique({
+            where: { slug, isActive: true }, select: {
+                name: true,
+                slug: true,
+                edition: true,
+                totalPage: true,
+                coverImg: true,
+                pdfUrl: true,
+                regularPrice: true,
+                salePrice: true,
+                discountRate: true,
+                authors: {
+                    select: {
+                        name: true,
+                        slug: true
+                    }
                 }
             }
-        } });
+        });
 
         return {
             success: true,

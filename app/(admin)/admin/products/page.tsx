@@ -5,14 +5,19 @@ import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { getProducts } from "@/actions/productActions";
 
-async function getData() {
-  const res = await getProducts();
+const Products = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) => {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Math.max(1, Number(resolvedSearchParams.page || 1));
 
-  return res.data || [];
-}
+  const limit = Math.max(50, Number(resolvedSearchParams.limit || 20));;
 
-const Products = async () => {
-  const data = await getData()
+  const res = await getProducts(currentPage, limit);
+
+  const data = res.data || [];
 
   return (
     <div>
@@ -24,7 +29,8 @@ const Products = async () => {
         </Button>
       </div>
 
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={data} pageCount={res.meta?.totalPages || 1}
+        currentPage={currentPage} />
     </div>
   )
 }
