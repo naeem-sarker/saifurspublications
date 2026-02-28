@@ -10,7 +10,7 @@ import {
 import Image from 'next/image';
 import { toBengaliNumber } from '@/lib/numberConvert';
 
-const ProductDetails = ({ term, data }: { term: string }) => {
+const ProductDetails = ({  data }) => {
     const [quantity, setQuantity] = useState(1);
     const [deliveryCharge, setDeliveryCharge] = useState(60);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);

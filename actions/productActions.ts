@@ -199,7 +199,6 @@ export const updateProduct = async (id: string, formData: FormData) => {
         let coverPath = existingProduct.coverImg;
         let pdfPath = existingProduct.pdfUrl;
 
-        // --- কভার ইমেজ আপডেট ও পুরোনো ফাইল ডিলিট ---
         if (coverFile && coverFile.size > 0 && typeof coverFile !== "string") {
             const buffer = Buffer.from(await coverFile.arrayBuffer());
             const seoFriendlyName = slug ? slug : name.replace(/[^a-zA-Z0-9]/g, "-").toLowerCase();
@@ -208,12 +207,10 @@ export const updateProduct = async (id: string, formData: FormData) => {
             const coverUploadDir = path.join(process.cwd(), "public/uploads/covers");
             await mkdir(coverUploadDir, { recursive: true });
 
-            // নতুন ফাইল সেভ করা
             await sharp(buffer)
                 .webp({ quality: 80 })
                 .toFile(path.join(coverUploadDir, fileName));
 
-            // পুরোনো ফাইলটি ডিলিট করা (যদি থাকে)
             if (existingProduct.coverImg) {
                 const oldPath = path.join(process.cwd(), "public", existingProduct.coverImg);
                 try {
@@ -226,7 +223,6 @@ export const updateProduct = async (id: string, formData: FormData) => {
             coverPath = `/uploads/covers/${fileName}`;
         }
 
-        // --- PDF আপডেট ও পুরোনো ফাইল ডিলিট ---
         if (pdfFile && pdfFile.size > 0 && typeof pdfFile !== "string") {
             const buffer = Buffer.from(await pdfFile.arrayBuffer());
             const seoFriendlyPdfName = slug ? `${slug}-pdf` : name.replace(/[^a-zA-Z0-9]/g, "-").toLowerCase();
@@ -235,10 +231,8 @@ export const updateProduct = async (id: string, formData: FormData) => {
             const pdfUploadDir = path.join(process.cwd(), "public/uploads/pdf");
             await mkdir(pdfUploadDir, { recursive: true });
 
-            // নতুন PDF সেভ করা
             await writeFile(path.join(pdfUploadDir, fileName), buffer);
 
-            // পুরোনো PDF ডিলিট করা (যদি থাকে)
             if (existingProduct.pdfUrl) {
                 const oldPdfPath = path.join(process.cwd(), "public", existingProduct.pdfUrl);
                 try {
@@ -251,7 +245,6 @@ export const updateProduct = async (id: string, formData: FormData) => {
             pdfPath = `/uploads/pdf/${fileName}`;
         }
 
-        // --- ডাটাবেজ আপডেট ---
         await prisma.product.update({
             where: { id },
             data: {
@@ -294,6 +287,7 @@ export const getProductByPublic = async (slug: string) => {
             where: { slug, isActive: true }, select: {
                 name: true,
                 slug: true,
+                description: true,
                 edition: true,
                 totalPage: true,
                 coverImg: true,
