@@ -10,12 +10,12 @@ import "swiper/css/effect-fade";
 
 const customStyles = `
   .swiper-pagination-bullet {
-    background-color: #9ca3af;
+    background-color: #dcdddf;
     opacity: 1;
   }
 
   .swiper-pagination-bullet-active {
-    background-color: #dc2626 !important;
+    background-color: #ffc9c9 !important;
     width: 24px !important;
     border-radius: 4px !important;
   }
@@ -38,7 +38,7 @@ const offers: Offer[] = [
     {
         id: 1,
         bgClass: "bg-blue-50",
-        image: "/ssc.png",
+        image: "/combo.png",
         width: 1224,
         height: 420,
     },
@@ -54,10 +54,10 @@ const offers: Offer[] = [
 
 export default function HeroSectionImageOnly() {
     return (
-        <div>
+        <div className="pt-2">
             <style jsx>{customStyles}</style>
 
-            <div className="max-w-[1240px] mx-auto px-4 pt-2">
+            <div className="">
                 <Swiper
                     modules={[Autoplay, Pagination, EffectFade]}
                     effect="fade"
@@ -77,7 +77,7 @@ export default function HeroSectionImageOnly() {
                     {offers.map((offer) => (
                         <SwiperSlide key={offer.id}>
                             <div
-                                className={`w-full ${offer.bgClass} flex justify-center`}
+                                className={`w-full  flex justify-center`}
                             >
                                 <Image
                                     src={offer.image}

@@ -13,7 +13,15 @@ import Link from "next/link"
 import { toBengaliNumber } from "@/lib/numberConvert"
 import Image from "next/image"
 
-export function CarouselDemo({ data }) {
+interface CarouselItem {
+  regularPrice: string | number;
+  salePrice: string | number;
+  slug: string;
+  coverImg: string;
+  name: string;
+}
+
+export function CarouselDemo({ data }: { data: CarouselItem[] }) {
   if (!data || data.length === 0) return null;
 
   return (
@@ -27,11 +35,9 @@ export function CarouselDemo({ data }) {
           delay: 3000,
         }),
       ]}
-      className="w-full max-w-7xl mx-auto px-4 md:px-0"
     >
-      <CarouselContent className="-ml-2 md:-ml-4">
+      <CarouselContent>
         {data.map((item, index) => {
-          // ডিসকাউন্ট পার্সেন্টেজ ক্যালকুলেশন
           const regularPrice = Number(item.regularPrice);
           const salePrice = Number(item.salePrice);
           const discount = regularPrice > salePrice
@@ -40,10 +46,9 @@ export function CarouselDemo({ data }) {
 
           return (
             <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/5">
-              <div className="h-full pb-2">
-                <Card className="overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 h-full bg-white group relative flex flex-col">
+              <div className="pb-2">
+                <Card className="overflow-hidden border border-gray-100 shadow-xs hover:shadow-md transition-all duration-300 h-full bg-white group relative flex flex-col">
 
-                  {/* Circular Discount Badge */}
                   {discount > 0 && (
                     <div className="absolute top-2 left-2 z-10 flex items-center justify-center rounded-full bg-red-600 text-white shadow-md
                                     w-10 h-10 md:w-12 md:h-12 scale-90 md:scale-100">
@@ -61,7 +66,7 @@ export function CarouselDemo({ data }) {
                   <CardContent className="p-0 flex flex-col h-full">
                     {/* Image Section */}
                     <Link href={`/products/${item.slug}`} className="block">
-                      <div className="bg-gray-50 flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden group-hover:bg-gray-100 transition-colors">
+                      <div className="flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden transition-colors">
                         <Image
                           src={item.coverImg}
                           alt={item.name}

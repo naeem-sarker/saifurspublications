@@ -16,7 +16,7 @@ export default function ProductGrid({ data }) {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 md:px-0">
+    <div className="max-w-7xl mx-auto px-4 md:px-0">
       {/* Grid Layout: Mobile 2, Tablet 3, Desktop 5 */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
         {data.map((item, index) => {

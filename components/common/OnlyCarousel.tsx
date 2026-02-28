@@ -57,7 +57,7 @@ export function OnlyCarousel({ data }) {
                   <CardContent className="p-0 flex flex-col h-full">
                     {/* Image Section */}
                     <Link href={`/products/${item.slug}`} className="block">
-                      <div className="bg-gray-50 flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden group-hover:bg-gray-100 transition-colors">
+                      <div className="flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden transition-colors">
                         <Image
                           src={item.coverImg}
                           alt={item.name}
