@@ -1,12 +1,6 @@
 "use client"
 
-import { useAuth } from '@/context/AuthContext';
-import { auth } from '@/lib/firebase/auth';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { ShoppingBag, User, LogOut, Settings } from 'lucide-react'
-import Image from 'next/image';
-import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,19 +8,15 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from '@/context/AuthContext';
+import { LogOut, Settings, ShoppingBag, User } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import LoginModal from './LoginModal';
 
 const Navbar = () => {
-    const { user, logOut } = useAuth();
-
-    const handleGoogleLogin = async () => {
-        const provider = new GoogleAuthProvider();
-        try {
-            await signInWithPopup(auth, provider);
-        } catch (error) {
-            console.error("Login failed", error);
-        }
-    };
+    const { user, logOut, role } = useAuth();
 
     return (
         <nav className='sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm'>
@@ -87,16 +77,18 @@ const Navbar = () => {
                                     <DropdownMenuSeparator />
 
                                     <DropdownMenuItem asChild className="cursor-pointer py-2 px-3">
-                                        <Link href="/profile" className="flex items-center gap-2">
+                                        {role === "ADMIN" ? <Link href="/admin" className="flex items-center gap-2">
+                                            <User size={16} /> Dashboard
+                                        </Link> : <Link href="/profile" className="flex items-center gap-2">
                                             <User size={16} /> Profile
-                                        </Link>
+                                        </Link>}
                                     </DropdownMenuItem>
 
-                                    <DropdownMenuItem className="cursor-pointer py-2 px-3">
+                                    {/* <DropdownMenuItem className="cursor-pointer py-2 px-3">
                                         <div className="flex items-center gap-2">
                                             <Settings size={16} /> Settings
                                         </div>
-                                    </DropdownMenuItem>
+                                    </DropdownMenuItem> */}
 
                                     <DropdownMenuSeparator />
 
@@ -111,13 +103,7 @@ const Navbar = () => {
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         ) : (
-                            <button
-                                type='button'
-                                onClick={handleGoogleLogin}
-                                className='px-5 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-full transition-all shadow-sm'
-                            >
-                                লগইন
-                            </button>
+                            <LoginModal />
                         )}
                     </div>
                 </div>

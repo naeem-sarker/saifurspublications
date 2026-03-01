@@ -1,3 +1,4 @@
+import { getSession } from "@/actions/authActions";
 import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
@@ -13,12 +14,16 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { redirect } from "next/navigation";
 
-export default function Page({
+export default async function Page({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getSession();
+
+  if (!session) redirect("/")
   return (
     <SidebarProvider>
       <AppSidebar />

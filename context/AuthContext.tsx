@@ -1,31 +1,47 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase/auth';
+import { createSession, logoutAction } from '@/actions/authActions';
+import { auth } from '@/lib/firebase/firebase-client';
+import { onIdTokenChanged, signOut, User } from 'firebase/auth';
 import Image from 'next/image';
-import { syncUserWithDB } from '@/actions/userActions';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-const AuthContext = createContext({});
+interface AuthContextType {
+    user: User | null;
+    role: "ADMIN" | "CLIENT" | null;
+    logOut: () => Promise<void>;
+}
 
-export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+const AuthContext = createContext<AuthContextType>({
+    user: null,
+    role: null,
+    logOut: async () => { },
+});
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+    const [user, setUser] = useState<User | null>(null);
+    const [role, setRole] = useState<"ADMIN" | "CLIENT" | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        const unsubscribe = onIdTokenChanged(auth, async (firebaseUser) => {
             if (firebaseUser) {
-                const userData = {
-                    uid: firebaseUser.uid,
-                    email: firebaseUser.email,
-                    displayName: firebaseUser.displayName,
-                    photoUrl: firebaseUser.photoURL,
-                };
+                try {
+                    const idToken = await firebaseUser.getIdToken();
 
-                await syncUserWithDB(userData);
-                setUser(firebaseUser)
+                    const result = await createSession(idToken);
+
+                    if (result.success) {
+                        setUser(firebaseUser);
+                        setRole(result.role as any);
+                    }
+                } catch (error) {
+                    console.error("Auth sync failed:", error);
+                }
             } else {
                 setUser(null);
+                setRole(null);
+                await logoutAction();
             }
             setLoading(false);
         });
@@ -34,14 +50,34 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const logOut = async () => {
-        await signOut(auth);
+        try {
+            setLoading(true);
+            await signOut(auth);
+            await logoutAction();
+            window.location.href = "/";
+        } catch (error) {
+            console.error("Logout failed:", error);
+            setLoading(false);
+        }
     };
 
     return (
-        <AuthContext.Provider value={{ user, logOut }}>
-            {loading ? <div className="flex h-screen items-center justify-center">
-                <Image src={"/saifurs.svg"} width={64} height={64} alt='Saifurs Publications' />
-            </div> : children}
+        <AuthContext.Provider value={{ user, role, logOut }}>
+            {loading ? (
+                <div className="flex h-screen items-center justify-center bg-white">
+                    <div className="animate-pulse">
+                        <Image
+                            src="/saifurs.svg"
+                            width={100}
+                            height={100}
+                            alt='Saifurs Publications'
+                            priority
+                        />
+                    </div>
+                </div>
+            ) : (
+                children
+            )}
         </AuthContext.Provider>
     );
 };

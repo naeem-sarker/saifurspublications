@@ -16,7 +16,7 @@ export default function ProductGrid({ data }) {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-0">
+    <div className="max-w-7xl mx-auto px-4 md:px-0 py-12">
       {/* Grid Layout: Mobile 2, Tablet 3, Desktop 5 */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
         {data.map((item, index) => {
@@ -49,7 +49,7 @@ export default function ProductGrid({ data }) {
                 <CardContent className="p-0 flex flex-col h-full">
                   {/* Image Section */}
                   <Link href={`/products/${item.slug}`} className="block">
-                    <div className="bg-gray-50 flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden group-hover:bg-gray-100 transition-colors">
+                    <div className="flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden transition-colors">
                       <Image
                         src={item.coverImg}
                         alt={item.name}

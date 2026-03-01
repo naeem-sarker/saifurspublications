@@ -131,17 +131,17 @@ export const getProducts = async (page: number = 1, limit: number = 10) => {
     }
 }
 
-export const getProductsFromPublic = async (filterType: string, categorySlug: string) => {
+export const getProductsFromPublic = async (filterType: string = "", categorySlug: string ="") => {
     try {
-        const query: Record<string, any> = {
+        const query: any = {
             isActive: true
         };
 
-        if (filterType) {
+        if (filterType && filterType.trim() !== "") {
             query[filterType] = true;
         }
 
-        if (categorySlug) {
+        if (categorySlug && categorySlug.trim() !== "") {
             query.categories = {
                 some: {
                     slug: categorySlug
@@ -149,7 +149,7 @@ export const getProductsFromPublic = async (filterType: string, categorySlug: st
             };
         }
 
-        const products = await prisma.product.findMany({ where: query });
+        const products = await prisma.product.findMany({ where: query, orderBy: { createdAt: "desc" } });
         return {
             success: true,
             data: products

@@ -1,11 +1,11 @@
-import { getProductByPublic, getProductsFromPublic } from '@/actions/productActions'
+import { getProductsFromPublic } from '@/actions/productActions'
 import ProductGrid from './ProductGrid';
 
 const Products = async () => {
-    const res = await getProductsFromPublic();
-    console.log(res)
+  const res = await getProductsFromPublic();
+
   return (
-    <div>
+    <div className=''>
       <ProductGrid data={res.data} />
     </div>
   )
