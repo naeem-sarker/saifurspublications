@@ -23,13 +23,15 @@ interface DataTableProps<TData, TValue> {
     data: TData[]
     pageCount: number
     currentPage: number
+    limit: number
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
     pageCount,
-    currentPage
+    currentPage,
+    limit
 }: DataTableProps<TData, TValue>) {
     const table = useReactTable({
         data,
@@ -94,7 +96,7 @@ export function DataTable<TData, TValue>({
                     </Button>
                 ) : (
                     <Button variant="outline" size="sm" asChild>
-                        <Link href={`?page=${currentPage - 1}`}>Previous</Link>
+                        <Link href={`?page=${currentPage - 1}&limit=${limit}`}>Previous</Link>
                     </Button>
                 )}
 
@@ -108,7 +110,7 @@ export function DataTable<TData, TValue>({
                     </Button>
                 ) : (
                     <Button variant="outline" size="sm" asChild>
-                        <Link href={`?page=${currentPage + 1}`}>Next</Link>
+                        <Link href={`?page=${currentPage + 1}&limit=${limit}`}>Next</Link>
                     </Button>
                 )}
             </div>

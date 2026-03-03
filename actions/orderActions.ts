@@ -69,7 +69,7 @@ export const getOrders = async (page: number = 1, limit: number = 10) => {
     try {
         const SAFE_LIMIT = Math.min(Math.max(1, limit), 50);
 
-        const totalCount = await prisma.author.count();
+        const totalCount = await prisma.order.count();
         const totalPages = Math.ceil(totalCount / SAFE_LIMIT) || 1;
 
         let currentPage = Math.max(1, page);

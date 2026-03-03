@@ -22,8 +22,8 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     pageCount: number
-    currentPage: number
     limit: number
+    currentPage: number
 }
 
 export function DataTable<TData, TValue>({
@@ -43,8 +43,6 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-
-
             <div className="overflow-hidden rounded-md border">
                 <Table>
                     <TableHeader>
@@ -88,6 +86,7 @@ export function DataTable<TData, TValue>({
                         )}
                     </TableBody>
                 </Table>
+
             </div>
 
             <div className="flex items-center justify-end space-x-2 py-4">
