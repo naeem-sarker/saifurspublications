@@ -9,18 +9,30 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { toBengaliNumber } from '@/lib/numberConvert';
+import { useForm } from 'react-hook-form';
+import { createOrderAction } from '@/actions/orderActions';
 
-const ProductDetails = ({  data }) => {
+interface OrderFormData {
+    name: string;
+    phone: string;
+    address: string;
+}
+
+const ProductDetails = ({ data }) => {
     const [quantity, setQuantity] = useState(1);
     const [deliveryCharge, setDeliveryCharge] = useState(60);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+    const { register, handleSubmit, formState: { errors, isValid, isSubmitting } } = useForm<OrderFormData>({
+        mode: 'onChange',
+        reValidateMode: 'onChange'
+    });
+
     const subTotal = data ? data.regularPrice * quantity : 0;
     const total = subTotal + deliveryCharge;
 
-    const handleOrder = (e: any) => {
-        e.preventDefault();
-        alert(`অর্ডার কনফার্ম হয়েছে! টোটাল: ৳${total}`);
+    const onSubmit = async (formData: OrderFormData) => {
+        await createOrderAction(formData,data)
     };
 
     return (
@@ -89,19 +101,34 @@ const ProductDetails = ({  data }) => {
                                 <h2 className="text-xl font-bold text-gray-900 ">আপনার তথ্য</h2>
                             </div>
 
-                            <form onSubmit={handleOrder} className="space-y-4">
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                 <div className="space-y-3">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">আপনার নাম</label>
-                                        <input required type="text" placeholder="পুরো নাম লিখুন" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none" />
+                                        <input autoFocus {...register("name", {
+                                            required: "আপনার নাম লিখুন",
+                                            minLength: { value: 2, message: "নাম কমপক্ষে ২ অক্ষরের হতে হবে" }
+                                        })}
+                                            type="text" placeholder="পুরো নাম লিখুন" className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none ${errors.name ? "border-red-400" : "border-gray-300"}`} />
+                                        {errors.name && <p className="text-[10px] text-red-400 mt-1">{errors.name.message}</p>}
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">মোবাইল নাম্বার</label>
-                                        <input required type="tel" placeholder="017xxxxxxxx" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none" />
+                                        <input {...register("phone", {
+                                            required: "১১ ডিজিটের নম্বর লিখুন",
+                                            pattern: {
+                                                value: /^01[3-9]\d{8}$/,
+                                                message: "সঠিক মোবাইল নম্বর দিন (১১ ডিজিট)"
+                                            }
+                                        })} type="tel" inputMode='numeric' placeholder='017xxxxxxxx'
+                                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none ${errors.phone ? "border-red-400" : "border-gray-300"}`} />
+                                        {errors.phone && <p className="text-[10px] text-red-400 mt-1">{errors.phone.message}</p>}
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">সম্পূর্ণ ঠিকানা</label>
-                                        <textarea required rows={2} placeholder="বাসা নং, রোড, এলাকা..." className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none resize-none"></textarea>
+                                        <textarea {...register("address", { required: "আপনার ঠিকানা লিখুন" })}
+                                            rows={2} placeholder="বাসা নং, রোড, এলাকা..." className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 outline-none resize-none ${errors.address ? "border-red-400" : "border-gray-300"}`}></textarea>
+                                        {errors.address && <p className="text-[10px] text-red-400 mt-1">{errors.address.message}</p>}
                                     </div>
                                 </div>
 
@@ -186,8 +213,12 @@ const ProductDetails = ({  data }) => {
                                     </div>
                                 </div>
 
-                                <button type="submit" className="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-200 transition-all flex justify-center items-center gap-2">
-                                    অর্ডার কনফার্ম করুন
+                                <button
+                                    type="submit"
+                                    disabled={!isValid || isSubmitting}
+                                    className={`w-full py-3.5 font-bold rounded-xl shadow-lg transition-all flex justify-center items-center gap-2 ${isValid ? 'bg-red-600 hover:bg-red-700 text-white shadow-red-200' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                                >
+                                    {isSubmitting ? "অর্ডার নেওয়া হচ্ছে..." : "অর্ডার কনফার্ম করুন"}
                                     <CheckCircle size={20} />
                                 </button>
 
@@ -201,7 +232,7 @@ const ProductDetails = ({  data }) => {
                 </div>
             </div>
 
-            {isPreviewOpen && (
+            {isPreviewOpen && data?.pdfUrl && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
                     <div className="bg-white w-full max-w-5xl h-[85vh] rounded-xl relative flex flex-col shadow-2xl overflow-hidden">
 

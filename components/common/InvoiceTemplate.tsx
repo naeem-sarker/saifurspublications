@@ -1,14 +1,19 @@
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
+
+// কালপুরুষ ফন্ট রেজিস্টার করা
+Font.register({
+    family: 'Kalpurush',
+    src: '/fonts/Kalpurush.ttf', // আপনার public/fonts ফোল্ডারের পাথ
+});
 
 const styles = StyleSheet.create({
     page: { 
         padding: 25, 
-        fontSize: 9, 
-        fontFamily: 'Helvetica', 
+        fontSize: 10, 
+        fontFamily: 'Kalpurush', // ডিফল্ট ফন্ট কালপুরুষ সেট করা হলো
         color: '#2d3748',
         backgroundColor: '#ffffff' 
     },
-    // Header Section
     headerContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -26,17 +31,15 @@ const styles = StyleSheet.create({
         textAlign: 'right',
     },
     brandName: {
-        fontSize: 14,
-        fontWeight: 'bold',
+        fontSize: 16,
+        fontFamily: 'Kalpurush',
         color: '#dc2626',
     },
     contactInfo: {
-        fontSize: 8,
+        fontSize: 9,
         color: '#4a5568',
         marginTop: 2,
     },
-
-    // Info Grid
     infoGrid: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -46,18 +49,16 @@ const styles = StyleSheet.create({
         width: '48%',
     },
     label: {
-        fontSize: 7,
+        fontSize: 8,
         textTransform: 'uppercase',
         color: '#718096',
-        fontWeight: 'bold',
         marginBottom: 3,
     },
     valueBold: {
-        fontSize: 10,
-        fontWeight: 'bold',
+        fontSize: 11,
+        fontFamily: 'Kalpurush',
+        color: '#1a202c'
     },
-
-    // Table
     table: {
         width: 'auto',
         marginBottom: 15,
@@ -79,8 +80,6 @@ const styles = StyleSheet.create({
     colQty: { width: '10%', textAlign: 'center' },
     colPrice: { width: '15%', textAlign: 'right' },
     colTotal: { width: '20%', textAlign: 'right', paddingRight: 5 },
-
-    // Totals
     summaryContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
@@ -97,73 +96,58 @@ const styles = StyleSheet.create({
         marginBottom: 2,
     },
     grandTotal: {
-        fontSize: 11,
-        fontWeight: 'bold',
+        fontSize: 12,
         color: '#dc2626',
         marginTop: 4,
-    },
-
-    // Footer
-    footer: {
-        position: 'absolute',
-        bottom: 20,
-        left: 25,
-        right: 25,
-        textAlign: 'center',
-        borderTop: 0.5,
-        borderColor: '#e2e8f0',
-        paddingTop: 8,
-        fontSize: 7.5,
-        color: '#718096',
     }
 });
 
-export const InvoiceDocument = ({ order }) => (
+export const InvoiceDocument = ({ order }: { order: any }) => (
     <Document>
         <Page size="A5" orientation="landscape" style={styles.page}>
-            {/* Header with Logo & Contact */}
+            {/* Header Area */}
             <View style={styles.headerContainer}>
                 <View>
                     <Image src="https://i.ibb.co/L6vV9tF/saifurs-logo.png" style={styles.logo} />
                 </View>
                 <View style={styles.companyMeta}>
-                    <Text style={styles.brandName}>Saifurs Publications</Text>
-                    <Text style={styles.contactInfo}>Phone: +880 1234-567890</Text>
-                    <Text style={styles.contactInfo}>Web: www.saifurs.com</Text>
+                    <Text style={styles.brandName}>সাইফুরস পাবলিকেশনস</Text>
+                    <Text style={styles.contactInfo}>ফোন: +৮৮০ ১৩২১-১৪৫৪৫৫</Text>
+                    <Text style={styles.contactInfo}>ওয়েব: www.saifurs.com</Text>
                 </View>
             </View>
 
             {/* Customer & Order Data */}
             <View style={styles.infoGrid}>
                 <View style={styles.infoBox}>
-                    <Text style={styles.label}>Bill To:</Text>
-                    <Text style={styles.valueBold}>{order.user?.name || order.name}</Text>
-                    <Text>{order.address}</Text>
-                    <Text>Phone: {order.user?.phone || order.phone}</Text>
+                    <Text style={styles.label}>বিল টু (Bill To):</Text>
+                    <Text style={styles.valueBold}>{order.user?.name}</Text>
+                    <Text style={{ marginTop: 2 }}>{order.shippingAddress}</Text>
+                    <Text>ফোন: {order.user?.phone}</Text>
                 </View>
                 <View style={[styles.infoBox, { textAlign: 'right' }]}>
-                    <Text style={styles.label}>Order Details:</Text>
-                    <Text style={styles.valueBold}>Invoice #{order.id.slice(-6).toUpperCase()}</Text>
-                    <Text>Date: {new Date(order.createdAt).toLocaleDateString()}</Text>
-                    <Text>Payment: Cash on Delivery</Text>
+                    <Text style={styles.label}>অর্ডার ডিটেইলস:</Text>
+                    <Text style={styles.valueBold}>ইনভয়েস #{order.id?.slice(-6).toUpperCase()}</Text>
+                    <Text>তারিখ: {new Date(order.createdAt).toLocaleDateString('bn-BD')}</Text>
+                    <Text>পেমেন্ট: ক্যাশ অন ডেলিভারি</Text>
                 </View>
             </View>
 
-            {/* Compact Table */}
+            {/* Table */}
             <View style={styles.table}>
                 <View style={styles.tableHeader}>
-                    <Text style={[styles.colDesc, { fontWeight: 'bold' }]}>Item Description</Text>
-                    <Text style={[styles.colQty, { fontWeight: 'bold' }]}>Qty</Text>
-                    <Text style={[styles.colPrice, { fontWeight: 'bold' }]}>Price</Text>
-                    <Text style={[styles.colTotal, { fontWeight: 'bold' }]}>Total</Text>
+                    <Text style={styles.colDesc}>বইয়ের বিবরণ</Text>
+                    <Text style={styles.colQty}>পরিমাণ</Text>
+                    <Text style={styles.colPrice}>মূল্য</Text>
+                    <Text style={styles.colTotal}>মোট</Text>
                 </View>
                 
-                {order.items.map((item, index) => (
+                {order.orderItems?.map((item: any, index: number) => (
                     <View key={index} style={styles.tableRow}>
-                        <Text style={styles.colDesc}>{item.product.name}</Text>
+                        <Text style={styles.colDesc}>{item.product?.name}</Text>
                         <Text style={styles.colQty}>{item.quantity}</Text>
-                        <Text style={styles.colPrice}>{item.price} TK</Text>
-                        <Text style={styles.colTotal}>{item.price * item.quantity} TK</Text>
+                        <Text style={styles.colPrice}>{item.price} টাকা</Text>
+                        <Text style={styles.colTotal}>{item.price * item.quantity} টাকা</Text>
                     </View>
                 ))}
             </View>
@@ -172,16 +156,16 @@ export const InvoiceDocument = ({ order }) => (
             <View style={styles.summaryContainer}>
                 <View style={styles.summaryBox}>
                     <View style={styles.summaryLine}>
-                        <Text>Subtotal:</Text>
-                        <Text>{order.totalAmount} TK</Text>
+                        <Text>সাবটোটাল:</Text>
+                        <Text>{order.totalAmount - order.deliveryCharge} টাকা</Text>
                     </View>
                     <View style={styles.summaryLine}>
-                        <Text>Shipping:</Text>
-                        <Text>0 TK</Text>
+                        <Text>ডেলিভারি চার্জ:</Text>
+                        <Text>{order.deliveryCharge} টাকা</Text>
                     </View>
                     <View style={[styles.summaryLine, styles.grandTotal]}>
-                        <Text>Total Payable:</Text>
-                        <Text>{order.totalAmount} TK</Text>
+                        <Text>সর্বমোট প্রদেয়:</Text>
+                        <Text>{order.totalAmount} টাকা</Text>
                     </View>
                 </View>
             </View>

@@ -131,7 +131,7 @@ export const getProducts = async (page: number = 1, limit: number = 10) => {
     }
 }
 
-export const getProductsFromPublic = async (filterType: string = "", categorySlug: string ="") => {
+export const getProductsFromPublic = async (filterType: string = "", categorySlug: string = "") => {
     try {
         const query: any = {
             isActive: true
@@ -285,6 +285,7 @@ export const getProductByPublic = async (slug: string) => {
     try {
         const product = await prisma.product.findUnique({
             where: { slug, isActive: true }, select: {
+                id: true,
                 name: true,
                 slug: true,
                 description: true,
