@@ -1,5 +1,6 @@
 "use server"
 
+import { adminAuth } from "@/lib/firebase/firebase-admin";
 import prisma from "@/lib/prisma";
 
 export const syncUserWithDB = async (firebaseUser) => {
@@ -61,5 +62,31 @@ export const getUsers = async (page: number = 1, limit: number = 10) => {
             success: false,
             message: "Internal Server Error"
         }
+    }
+}
+
+export const updateUserRole = async (id: string, newRole: "USER" | "MODERATOR") => {
+    try {
+        const user = await prisma.user.findUnique({ where: { id: id } });
+
+        if (!user) {
+            return { success: false, message: "User doesn't exist." };
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: id },
+            data: { role: newRole },
+        });
+
+        await adminAuth.setCustomUserClaims(updatedUser.uid || "", { role: newRole });
+
+        return {
+            success: true,
+            message: `User is now a ${newRole.toLowerCase()}.`,
+            role: updatedUser.role
+        };
+    } catch (error) {
+        console.error("Role Update Error:", error);
+        return { success: false, message: "Internal Server Error" };
     }
 }

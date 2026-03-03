@@ -1,12 +1,10 @@
 "use server"
 
 import { cookies } from "next/headers";
-
 import type { DecodedIdToken } from "firebase-admin/auth";
 import { adminAuth } from "@/lib/firebase/firebase-admin";
 import prisma from "@/lib/prisma";
 import { syncUserWithDB } from "./userActions";
-import { redirect } from "next/navigation";
 
 export async function getSession(): Promise<DecodedIdToken | null> {
     const cookieStore = await cookies();

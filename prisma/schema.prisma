@@ -127,3 +127,14 @@ enum OrderStatus {
   CANCELLED
   RETURN
 }
+
+model Hero {
+  id       String  @id @default(cuid())
+  title    String
+  image    String
+  url      String?
+  isActive Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,11 +1,15 @@
 import React from 'react'
+import Heros from './HerosDetails'
+import { getHeros } from '@/actions/herosActions'
 
-const Heros = () => {
+const Page = async () => {
+  const res = await getHeros();
+
   return (
     <div>
-      Heros
+      <Heros heros={res.data}/>
     </div>
   )
 }
 
-export default Heros
+export default Page
