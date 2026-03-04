@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+model User {
+  id      String  @id @default(uuid())
+  uid     String? @unique
+  email   String? @unique
+  phone   String? @unique
+  name    String?
+  image   String?
+  address String?
+  role    Role    @default(USER)
+
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Author {
+  id          String  @id @default(uuid())
+  name        String
+  slug        String  @unique
+  description String?
+  avatarUrl   String?
+  isActive    Boolean @default(false)
+
+  products Product[] @relation("ProductToAuthor")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id       String  @id @default(uuid())
+  name     String
+  slug     String  @unique
+  isActive Boolean @default(false)
+
+  products Product[] @relation("ProductToCategory")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ProductType {
+  BOOK
+  STATIONARY
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  type        ProductType @default(BOOK)
+  name        String
+  slug        String      @unique
+  description String?
+  coverImg    String
+
+  regularPrice Float @default(0)
+  salePrice    Float @default(0)
+  discountRate Float @default(0)
+
+  pdfUrl    String?
+  edition   String?
+  totalPage Int?
+
+  isActive       Boolean @default(false)
+  isStock        Boolean @default(false)
+  isDeliveryFree Boolean @default(false)
+  isFeatured     Boolean @default(false)
+  isPopular      Boolean @default(false)
+
+  authors    Author[]   @relation("ProductToAuthor")
+  categories Category[] @relation("ProductToCategory")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  user            User        @relation(fields: [userId], references: [id])
+  userId          String
+  totalAmount     Float
+  deliveryCharge  Float
+  shippingAddress String
+  status          OrderStatus @default(PENDING)
+
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  order     Order  @relation(fields: [orderId], references: [id])
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURN
+}
+
+model Hero {
+  id       String  @id @default(cuid())
+  title    String
+  image    String
+  url      String?
+  isActive Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
