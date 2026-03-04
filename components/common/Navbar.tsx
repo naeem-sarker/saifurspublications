@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from '@/context/AuthContext';
-import { LogOut, Settings, ShoppingBag, User } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LoginModal from './LoginModal';
@@ -22,13 +22,10 @@ const Navbar = () => {
         <nav className='sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm'>
             <div className='max-w-7xl mx-auto px-4 md:px-0 py-2'>
                 <div className='flex items-center justify-between gap-4'>
-
-                    {/* Logo */}
                     <Link href="/" className='flex shrink-0 select-none cursor-pointer'>
                         <Image src="/saifurs.svg" width={50} height={50} alt='Saifurs Publications' priority />
                     </Link>
 
-                    {/* Navigation Links */}
                     <div className='hidden md:flex flex-1 justify-center'>
                         <div className='flex gap-8 text-sm font-medium text-gray-600'>
                             <Link href="/products?filter=academic" className="hover:text-red-600 transition-colors">একাডেমিক</Link>
@@ -36,17 +33,7 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    {/* Actions Section */}
                     <div className='flex items-center gap-3'>
-
-                        {/* Cart Icon */}
-                        <Link href="/cart" className='relative p-2 text-gray-700 hover:bg-gray-100 rounded-full transition-all'>
-                            <ShoppingBag size={22} />
-                            <span className='absolute top-1 right-1 h-4 w-4 bg-red-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white'>
-                                2
-                            </span>
-                        </Link>
-
                         {user ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="outline-none focus:ring-2 focus:ring-red-100 rounded-full transition-all cursor-pointer">
@@ -83,12 +70,6 @@ const Navbar = () => {
                                             <User size={16} /> Profile
                                         </Link>}
                                     </DropdownMenuItem>
-
-                                    {/* <DropdownMenuItem className="cursor-pointer py-2 px-3">
-                                        <div className="flex items-center gap-2">
-                                            <Settings size={16} /> Settings
-                                        </div>
-                                    </DropdownMenuItem> */}
 
                                     <DropdownMenuSeparator />
 
