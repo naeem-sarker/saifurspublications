@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Carousel,
@@ -9,7 +8,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import Autoplay from "embla-carousel-autoplay"
 import Link from "next/link"
 import { toBengaliNumber } from "@/lib/numberConvert"
 import Image from "next/image"
@@ -27,10 +25,9 @@ export function OnlyCarousel({ data }) {
     >
       <CarouselContent className="-ml-2 md:-ml-4">
         {data.map((item, index) => {
-          // ডিসকাউন্ট পার্সেন্টেজ ক্যালকুলেশন
           const regularPrice = Number(item.regularPrice);
           const salePrice = Number(item.salePrice);
-          const discount = regularPrice > salePrice
+          const discount = (salePrice > 0 && regularPrice > salePrice)
             ? Math.round(((regularPrice - salePrice) / regularPrice) * 100)
             : 0;
 
@@ -39,7 +36,6 @@ export function OnlyCarousel({ data }) {
               <div className="h-full pb-2">
                 <Card className="overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 h-full bg-white group relative flex flex-col">
 
-                  {/* Circular Discount Badge */}
                   {discount > 0 && (
                     <div className="absolute top-2 left-2 z-10 flex items-center justify-center rounded-full bg-red-600 text-white shadow-md
                                     w-10 h-10 md:w-12 md:h-12 scale-90 md:scale-100">
@@ -55,7 +51,6 @@ export function OnlyCarousel({ data }) {
                   )}
 
                   <CardContent className="p-0 flex flex-col h-full">
-                    {/* Image Section */}
                     <Link href={`/products/${item.slug}`} className="block">
                       <div className="flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden transition-colors">
                         <Image
@@ -68,7 +63,6 @@ export function OnlyCarousel({ data }) {
                       </div>
                     </Link>
 
-                    {/* Info Section */}
                     <div className="p-3 md:p-4 flex flex-col flex-grow gap-1 md:gap-2">
                       <Link href={`/products/${item.slug}`}>
                         <h3 className="font-semibold text-sm md:text-[15px] text-gray-800 line-clamp-2 h-10 hover:text-red-500 transition-colors leading-tight">
@@ -77,20 +71,17 @@ export function OnlyCarousel({ data }) {
                       </Link>
 
                       <div className="flex flex-col md:flex-row md:items-baseline md:gap-2 mt-1">
-                        {/* বর্তমান দাম (Sale Price) */}
                         <span className="text-red-600 font-bold text-base md:text-xl">
                           {toBengaliNumber(item.salePrice || item.regularPrice)}৳
                         </span>
 
-                        {/* আগের দাম (Regular Price) - যদি ডিসকাউন্ট থাকে */}
-                        {item.salePrice && regularPrice > salePrice && (
+                        {salePrice > 0 && regularPrice > salePrice && (
                           <span className="text-gray-400 line-through text-[11px] md:text-sm">
-                            {toBengaliNumber(item.regularPrice)}৳
+                            {toBengaliNumber(regularPrice)}৳
                           </span>
                         )}
                       </div>
 
-                      {/* Order Button */}
                       <Link
                         href={`/products/${item.slug}`}
                         className="mt-auto w-full bg-red-500 hover:bg-red-600 text-white text-xs md:text-sm font-medium rounded-md py-2.5 transition-all text-center active:scale-95 shadow-sm"
