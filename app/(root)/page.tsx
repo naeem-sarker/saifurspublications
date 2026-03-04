@@ -1,3 +1,4 @@
+import { getHerosFromPublic } from '@/actions/herosActions';
 import { getProductsFromPublic } from '@/actions/productActions'
 import { CarouselDemo } from '@/components/common/CarouselDemo';
 import HeroSectionImageOnly from '@/components/common/HeroSection';
@@ -7,10 +8,11 @@ import Link from 'next/link';
 const Home = async () => {
   const resPopularProducts = await getProductsFromPublic("isPopular", "");
   const res = await getProductsFromPublic("", "english");
-  
+  const hRes = await getHerosFromPublic();
+
   return (
     <div className='max-w-7xl mx-auto'>
-      <HeroSectionImageOnly />
+      <HeroSectionImageOnly data={hRes.data} />
 
       <div className="py-10 px-4 md:px-0">
         <div className="flex justify-between items-end mb-6">

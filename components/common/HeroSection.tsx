@@ -7,6 +7,7 @@ import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
+import Link from "next/link";
 
 const customStyles = `
   .swiper-pagination-bullet {
@@ -27,32 +28,12 @@ const customStyles = `
 
 
 interface Offer {
-    id: number;
-    bgClass: string;
+    id: string;
     image: string;
-    width: number;
-    height: number;
+    url: string;
 }
 
-const offers: Offer[] = [
-    {
-        id: 1,
-        bgClass: "bg-blue-50",
-        image: "/combo.png",
-        width: 1224,
-        height: 420,
-    },
-    {
-        id: 2,
-        bgClass: "bg-red-50",
-        image: "/kids.png",
-        width: 1224,
-        height: 420,
-    },
-];
-
-
-export default function HeroSectionImageOnly() {
+export default function HeroSectionImageOnly({ data }: { data: Offer[] }) {
     return (
         <div className="pt-2">
             <style jsx>{customStyles}</style>
@@ -74,20 +55,19 @@ export default function HeroSectionImageOnly() {
                     }}
                     className="w-full"
                 >
-                    {offers.map((offer) => (
-                        <SwiperSlide key={offer.id}>
-                            <div
-                                className={`w-full  flex justify-center`}
+                    {data.map((item: Offer) => (
+                        <SwiperSlide key={item.id}>
+                            <Link href={item.url}
                             >
                                 <Image
-                                    src={offer.image}
+                                    src={item.image}
                                     alt="Offer Banner"
-                                    width={offer.width}
-                                    height={offer.height}
+                                    width={1280}
+                                    height={400}
                                     className="w-full h-auto object-contain"
                                     priority
                                 />
-                            </div>
+                            </Link>
                         </SwiperSlide>
                     ))}
                 </Swiper>
