@@ -3,15 +3,13 @@ services:
     image: postgres:15
     restart: always
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=prisma
-    ports:
-      - "5433:5432"
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     networks:
       - saifurspublications-network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U prisma -d postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 5s
       timeout: 2s
       retries: 20
@@ -22,7 +20,23 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+  app:
+    build: .
+    restart: always
+    ports:
+      - "127.0.0.1:3000:3000"
+    env_file: .env
+    volumes:
+      - saifurspublications_uploads:/app/public/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - saifurspublications-network
+    command: sh -c "pnpx prisma migrate deploy && pnpm start"
+
 networks:
   saifurspublications-network:
 volumes:
   saifurspublications_postgres_data:
+  saifurspublications_uploads:
