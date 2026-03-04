@@ -25,6 +25,12 @@ const Heros = ({ heros = [] }: { heros: any[] }) => {
 
     try {
       const result = await upsertHero(formData);
+
+      if (!result) {
+        toast.error("No response from server");
+        return;
+      }
+
       if (result.success) {
         setPreview(null);
         form.reset();

@@ -5,7 +5,21 @@ import Link from "next/link"
 import { toBengaliNumber } from "@/lib/numberConvert"
 import Image from "next/image"
 
-export default function ProductGrid({ data }) {
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  regularPrice: number;
+  salePrice: number;
+  discountRate: number;
+  coverImg?: string;
+}
+
+interface ProductGridProps {
+  data: Product[];
+}
+
+export default function ProductGrid({ data }: ProductGridProps) {
   if (!data || data.length === 0) {
     return (
       <div className="text-center py-20 text-gray-500">
@@ -45,13 +59,13 @@ export default function ProductGrid({ data }) {
                 <CardContent className="p-0 flex flex-col h-full">
                   <Link href={`/products/${item.slug}`} className="block">
                     <div className="flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden transition-colors">
-                      <Image
+                      {item.coverImg && <Image
                         src={item.coverImg}
                         alt={item.name}
                         width={250}
                         height={350}
                         className="object-contain h-[85%] w-auto transition-transform duration-500 group-hover:scale-105"
-                      />
+                      />}
                     </div>
                   </Link>
 

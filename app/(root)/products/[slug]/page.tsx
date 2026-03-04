@@ -1,6 +1,7 @@
 import { getProductByPublic } from "@/actions/productActions";
 import ProductDetails from "@/components/common/ProductDeatils";
 import { Metadata, ResolvingMetadata } from "next";
+import { notFound } from "next/navigation";
 
 type Props = {
     params: Promise<{ slug: string }>
@@ -30,6 +31,10 @@ const BookDetailsPage = async ({
     const { slug } = await params;
 
     const res = await getProductByPublic(slug);
+
+    if (!res || !res.data) {
+        notFound();
+    }
 
     return <ProductDetails data={res.data} />
 };

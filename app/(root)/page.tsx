@@ -10,9 +10,14 @@ const Home = async () => {
   const res = await getProductsFromPublic("", "english");
   const hRes = await getHerosFromPublic();
 
+  const hData = (hRes?.data || []).map(hero => ({
+    ...hero,
+    url: hero.url ?? ""
+  }));
+
   return (
     <div className='max-w-7xl mx-auto'>
-      <HeroSectionImageOnly data={hRes.data} />
+      <HeroSectionImageOnly data={hData} />
 
       <div className="py-10 px-4 md:px-0">
         <div className="flex justify-between items-end mb-6">
@@ -28,7 +33,7 @@ const Home = async () => {
           </Link>
         </div>
 
-        <CarouselDemo data={resPopularProducts.data} />
+        <CarouselDemo data={resPopularProducts.data || []} />
       </div>
 
 
@@ -46,7 +51,7 @@ const Home = async () => {
           </Link>
         </div>
 
-        <OnlyCarousel data={res.data} />
+        <OnlyCarousel data={res.data || []} />
       </div>
     </div>
   )

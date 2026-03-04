@@ -39,7 +39,7 @@ const UpdateProduct = async ({
                 </Button>
             </div>
 
-            <ProductForm initialData={res?.data} authorsList={authorRes.data} categoriesList={catRes.data} />
+            <ProductForm initialData={res?.data} authorsList={authorRes.data || []} categoriesList={catRes.data || []} />
         </div>
     )
 }

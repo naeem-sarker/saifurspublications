@@ -12,7 +12,20 @@ import Link from "next/link"
 import { toBengaliNumber } from "@/lib/numberConvert"
 import Image from "next/image"
 
-export function OnlyCarousel({ data }) {
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  coverImg?: string | null;
+  salePrice: number;
+  regularPrice: number;
+}
+
+interface OnlyCarouselProps {
+  data: Product[];
+}
+
+export function OnlyCarousel({ data }: OnlyCarouselProps) {
   if (!data || data.length === 0) return null;
 
   return (
@@ -53,13 +66,13 @@ export function OnlyCarousel({ data }) {
                   <CardContent className="p-0 flex flex-col h-full">
                     <Link href={`/products/${item.slug}`} className="block">
                       <div className="flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden transition-colors">
-                        <Image
+                        {item.coverImg && <Image
                           src={item.coverImg}
                           alt={item.name}
                           width={200}
                           height={300}
                           className="object-contain h-[85%] w-auto transition-transform duration-500 group-hover:scale-105"
-                        />
+                        />}
                       </div>
                     </Link>
 

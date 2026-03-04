@@ -18,7 +18,7 @@ const AddProduct = async () => {
                 </Button>
             </div>
 
-            <ProductForm authorsList={res.data} categoriesList={catRes.data}/>
+            <ProductForm authorsList={res.data || []} categoriesList={catRes.data || []} />
         </div>
     )
 }

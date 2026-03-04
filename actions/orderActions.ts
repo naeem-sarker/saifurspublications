@@ -3,7 +3,20 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
-export async function createOrderAction(formData: any, data) {
+interface OrderFormData {
+    name: string;
+    phone: string;
+    address: string;
+}
+
+interface OrderProductData {
+    id: string;
+    regularPrice: number;
+    deliveryCharge?: number;
+    [key: string]: any;
+}
+
+export async function createOrderAction(formData: OrderFormData, data: OrderProductData) {
     try {
         const { name, phone, address } = formData;
 
@@ -27,8 +40,6 @@ export async function createOrderAction(formData: any, data) {
         const items = [
             data
         ]
-
-        console.log(items)
 
         const newOrder = await prisma.order.create({
             data: {
@@ -210,7 +221,7 @@ export const addItemToOrder = async (orderId: string, productId: string, quantit
     }
 }
 
-export const updateOrderPricing = async (orderId: string, deliveryCharge: number, items: {id: string, price: number, quantity: number}[]) => {
+export const updateOrderPricing = async (orderId: string, deliveryCharge: number, items: { id: string, price: number, quantity: number }[]) => {
     try {
         await prisma.$transaction(async (tx) => {
             // ১. প্রতিটি আইটেম আপডেট করা
@@ -228,9 +239,9 @@ export const updateOrderPricing = async (orderId: string, deliveryCharge: number
             // ৩. অর্ডার আপডেট করা
             await tx.order.update({
                 where: { id: orderId },
-                data: { 
+                data: {
                     deliveryCharge: deliveryCharge,
-                    totalAmount: newTotal 
+                    totalAmount: newTotal
                 }
             });
         });

@@ -7,7 +7,7 @@ import { getCategories } from "@/actions/categoryActions"
 async function getData() {
   const res = await getCategories();
 
-  return res.data;
+  return res.data || [];
 }
 
 const Categories = async () => {

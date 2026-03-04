@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import * as z from "zod"
 import Image from "next/image"
 import {
-    Upload, X, FileText, Star, TrendingUp,
+    Upload, FileText, Star, TrendingUp,
     CheckCircle2, Package, Layers
 } from "lucide-react"
 
@@ -17,20 +17,22 @@ import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createProduct, updateProduct } from "@/actions/productActions" // updateProduct ইম্পোর্ট করুন
+import { createProduct, updateProduct } from "@/actions/productActions"
 import { useRouter } from "next/navigation"
 
 const generateSlug = (text: string) => {
     return text.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/--+/g, "-").trim();
 };
 
+type ProductFormValues = z.infer<typeof formSchema>;
+
 const formSchema = z.object({
     type: z.enum(["BOOK", "STATIONARY"]),
     name: z.string().min(1, "Product name is required"),
     slug: z.string().min(1, "Slug is required"),
-    regularPrice: z.coerce.number().min(0),
-    salePrice: z.coerce.number().min(0),
-    discountRate: z.coerce.number().min(0).max(100),
+    regularPrice: z.coerce.number().min(0).default(0),
+    salePrice: z.coerce.number().min(0).default(0),
+    discountRate: z.coerce.number().min(0).max(100).default(0),
     isActive: z.boolean().default(true),
     isFeatured: z.boolean().default(false),
     isPopular: z.boolean().default(false),
@@ -49,7 +51,7 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
     const fileInputRef = React.useRef<HTMLInputElement>(null)
     const pdfInputRef = React.useRef<HTMLInputElement>(null)
 
-    // এডিট মোডের জন্য ডাটা ফরম্যাট করা (Object Array থেকে String ID Array তে রূপান্তর)
+
     const formattedInitialData = React.useMemo(() => {
         if (!initialData) return undefined;
         return {
@@ -59,12 +61,25 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
         };
     }, [initialData]);
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<ProductFormValues>({
+        resolver: zodResolver(formSchema as any),
         defaultValues: formattedInitialData || {
-            type: "BOOK", name: "", slug: "", regularPrice: 0, salePrice: 0, discountRate: 0,
-            isStock: true, isDeliveryFree: false, isFeatured: false, isPopular: false, isActive: true,
-            authors: [], categories: []
+            type: "BOOK",
+            name: "",
+            slug: "",
+            regularPrice: 0,
+            salePrice: 0,
+            discountRate: 0,
+            isStock: true,
+            isDeliveryFree: false,
+            isFeatured: false,
+            isPopular: false,
+            isActive: true,
+            authors: [],
+            categories: [],
+            edition: "",
+            totalPage: 0,
+            pdfUrl: undefined
         }
     })
 
@@ -74,7 +89,7 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value;
         form.setValue("name", name);
-        if (!initialData) form.setValue("slug", generateSlug(name)); // শুধু ক্রিয়েট মোডে অটো স্ল্যাগ হবে
+        if (!initialData) form.setValue("slug", generateSlug(name));
     };
 
     const handleDiscountChange = (rate: number) => {
@@ -109,8 +124,8 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
             formData.append("pdfUrl", pdfInputRef.current.files[0]);
         }
 
-        const res = initialData 
-            ? await updateProduct(initialData.id, formData) 
+        const res = initialData
+            ? await updateProduct(initialData.id, formData)
             : await createProduct(formData);
 
         if (res.success) {
@@ -127,7 +142,6 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
             <Card className="overflow-hidden">
                 <CardContent className="p-8 space-y-8">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                        {/* বাঁদিকের অংশ: ইমেজ ও সুইচ */}
                         <div className="space-y-6">
                             <FieldLabel className="text-sm font-bold flex items-center gap-2"><Upload size={16} /> Cover Image</FieldLabel>
                             <div
@@ -175,7 +189,6 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
                             </div>
                         </div>
 
-                        {/* ডানদিকের অংশ: ইনপুট ফিল্ডস */}
                         <div className="lg:col-span-2 space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <Controller name="type" control={form.control} render={({ field }) => (
@@ -202,7 +215,6 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
                                 </Field>
                             )} />
 
-                            {/* প্রাইসিং */}
                             <div className="grid grid-cols-3 gap-4 p-6 bg-primary/5 rounded-3xl border border-primary/10">
                                 <Controller name="regularPrice" control={form.control} render={({ field }) => (
                                     <Field><FieldLabel className="text-[10px] uppercase font-bold">Regular (৳)</FieldLabel>

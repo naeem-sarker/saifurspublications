@@ -24,7 +24,7 @@ const formSchema = z.object({
     avatarUrl: z
         .any()
         .optional(),
-    isActive: z.boolean().default(true),
+    isActive: z.boolean(),
 })
 
 export function AuthorForm({ initialData }: { initialData?: any }) {
@@ -38,7 +38,7 @@ export function AuthorForm({ initialData }: { initialData?: any }) {
             slug: initialData?.slug || "",
             description: initialData?.description || "",
             avatarUrl: initialData?.avatarUrl || "",
-            isActive: initialData !== undefined ? initialData.isActive : true,
+            isActive: initialData?.isActive ?? true,
         },
     })
 

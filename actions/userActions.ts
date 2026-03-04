@@ -3,21 +3,28 @@
 import { adminAuth } from "@/lib/firebase/firebase-admin";
 import prisma from "@/lib/prisma";
 
-export const syncUserWithDB = async (firebaseUser) => {
+interface FirebaseUser {
+    uid: string;
+    email?: string;
+    name?: string;
+    picture?: string;
+}
+
+export const syncUserWithDB = async (firebaseUser: FirebaseUser) => {
     try {
         const { uid, email, name, picture } = firebaseUser;
 
         const user = await prisma.user.upsert({
             where: { uid: uid },
             update: {
-                name: name,
-                image: picture
+                name: name || "",
+                image: picture || ""
             },
             create: {
                 uid: uid,
-                email: email,
-                name: name,
-                image: picture,
+                email: email || "",
+                name: name || "",
+                image: picture || "",
                 role: "USER"
             }
         })
@@ -25,6 +32,7 @@ export const syncUserWithDB = async (firebaseUser) => {
         return user;
     } catch (error) {
         console.log(error)
+        throw error;
     }
 }
 

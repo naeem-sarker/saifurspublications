@@ -25,8 +25,9 @@ export type OrderData = {
     createdAt: Date
     user: {
         name: string | null
-        phone: string
-    }
+        phone: string | null
+    },
+    orderItems: any[];
 }
 
 export const columns: ColumnDef<OrderData>[] = [

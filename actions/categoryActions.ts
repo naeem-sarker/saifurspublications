@@ -2,7 +2,12 @@
 
 import prisma from "@/lib/prisma";
 
-export const createCategory = async (data) => {
+interface CreateCategoryInput {
+    name: string;
+    slug: string;
+}
+
+export const createCategory = async (data: CreateCategoryInput) => {
     console.log(data)
     try {
         const { name, slug } = data;

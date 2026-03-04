@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 
-import { getAuthors } from "@/actions/authorActions"
 import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { getOrders } from "@/actions/orderActions"

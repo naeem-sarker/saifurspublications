@@ -11,7 +11,7 @@ const Products = async () => {
   const res = await getProductsFromPublic();
 
   return (
-    <ProductGrid data={res.data} />
+    <ProductGrid data={res.data || []} />
   )
 }
 

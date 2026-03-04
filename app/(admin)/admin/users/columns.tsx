@@ -13,16 +13,18 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
 
-export type Payment = {
+export type User = {
     id: string
-    name: string
-    phone: string
-    email: string
-    role: string
-    isActive: boolean,
+    uid: string | null
+    email: string | null
+    name: string | null
+    phone: string | null
+    role: "USER" | "ADMIN" | "MODERATOR"
+    createdAt: Date
+    updatedAt: Date
 }
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<User>[] = [
     {
         accessorKey: "name",
         header: "Name",

@@ -11,6 +11,8 @@ import Image from 'next/image';
 import { toBengaliNumber } from '@/lib/numberConvert';
 import { useForm } from 'react-hook-form';
 import { createOrderAction } from '@/actions/orderActions';
+import { toast } from 'sonner';
+import { redirect } from 'next/navigation';
 
 interface OrderFormData {
     name: string;
@@ -18,7 +20,29 @@ interface OrderFormData {
     address: string;
 }
 
-const ProductDetails = ({ data }) => {
+interface Product {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    coverImg: string;
+    regularPrice: number;
+    salePrice: number;
+    discountRate: number;
+    pdfUrl: string | null;
+    edition: string | null;
+    totalPage: number | null;
+    authors: {
+        name: string;
+        slug: string;
+    }[];
+}
+
+interface ProductDetailsProps {
+    data: Product;
+}
+
+const ProductDetails = ({ data }: ProductDetailsProps) => {
     const [quantity, setQuantity] = useState(1);
     const [deliveryCharge, setDeliveryCharge] = useState(60);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -32,7 +56,14 @@ const ProductDetails = ({ data }) => {
     const total = subTotal + deliveryCharge;
 
     const onSubmit = async (formData: OrderFormData) => {
-        await createOrderAction(formData,data)
+        const res = await createOrderAction(formData, data)
+
+        if (res.success) {
+            toast.success(res.message)
+            redirect("/order/success")
+        } else {
+            toast.error(res.message)
+        }
     };
 
     return (
@@ -77,11 +108,11 @@ const ProductDetails = ({ data }) => {
                                     </div>
                                     <div>
                                         <span className="text-gray-600">সংস্করণ: </span><span className='text-black font-semibold'>
-                                            {toBengaliNumber(data?.edition)}</span>
+                                            {toBengaliNumber(data?.edition ?? "")}</span>
                                     </div>
                                     <div>
                                         <span className="text-gray-600">পৃষ্ঠা: </span><span className='text-black font-semibold'>
-                                            {toBengaliNumber(data?.totalPage)}</span>
+                                            {toBengaliNumber(data?.totalPage ?? 0)}</span>
                                     </div>
                                 </div>
 

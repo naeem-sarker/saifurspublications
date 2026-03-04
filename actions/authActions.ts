@@ -32,7 +32,7 @@ export async function createSession(idToken: string) {
         const { uid, email, name, picture } = decodedToken;
 
         if (!user) {
-            await syncUserWithDB({ uid, email, name, picture })
+            user = await syncUserWithDB({ uid, email, name, picture })
         }
 
         await adminAuth.setCustomUserClaims(firebaseUid, { role: user.role });
