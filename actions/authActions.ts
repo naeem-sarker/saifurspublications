@@ -14,6 +14,7 @@ export async function getSession(): Promise<DecodedIdToken | null> {
 
     try {
         const decodedClaims = await adminAuth.verifySessionCookie(session, true);
+
         return decodedClaims;
     } catch {
         return null;
