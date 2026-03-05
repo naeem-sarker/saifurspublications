@@ -7,6 +7,7 @@ interface OrderFormData {
     name: string;
     phone: string;
     address: string;
+    deliveryCharge: number;
 }
 
 interface OrderProductData {
@@ -18,7 +19,7 @@ interface OrderProductData {
 
 export async function createOrderAction(formData: OrderFormData, data: OrderProductData) {
     try {
-        const { name, phone, address } = formData;
+        const { name, phone, address, deliveryCharge } = formData;
 
         let user = await prisma.user.findUnique({
             where: { phone: phone }
@@ -35,8 +36,9 @@ export async function createOrderAction(formData: OrderFormData, data: OrderProd
             });
         }
 
-        const d = data?.deliveryCharge || 60;
-        const p = data.regularPrice + d;
+        const productPrice = data.salePrice > 0 ? data.salePrice : data.regularPrice;
+        const totalAmount = productPrice + deliveryCharge;
+
         const items = [
             data
         ]
@@ -44,8 +46,8 @@ export async function createOrderAction(formData: OrderFormData, data: OrderProd
         const newOrder = await prisma.order.create({
             data: {
                 userId: user.id,
-                totalAmount: p,
-                deliveryCharge: d,
+                totalAmount: totalAmount,
+                deliveryCharge: deliveryCharge,
                 shippingAddress: address,
                 status: 'PENDING',
 

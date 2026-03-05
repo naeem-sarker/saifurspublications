@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { getPublicAuthors } from '@/actions/authorActions'
 import Image from 'next/image';
 
@@ -25,6 +28,7 @@ const Authors = async () => {
                                         alt={author.name}
                                         width={96}
                                         height={96}
+                                        unoptimized={true}
                                         className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-50 group-hover:ring-blue-100 transition-all"
                                     />
                                 ) : (

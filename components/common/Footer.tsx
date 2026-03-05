@@ -12,7 +12,7 @@ const Footer = () => {
 
             <div className="flex gap-4 pt-2">
               <Link href="https://www.facebook.com/SaifursPublications" target='_blank' className="bg-gray-800 p-2 rounded hover:bg-[#1877F2] hover:text-white transition"><FaFacebook size={20} /></Link>
-              <Link href="https://www.youtube.com/@SaifursOfficial" target="_blank" className="bg-gray-800 p-2 rounded hover:bg-[#FF0000] hover:text-white transition"><FaYoutube size={20} /></Link>
+              <Link href="https://www.youtube.com/@SaifursPublications" target="_blank" className="bg-gray-800 p-2 rounded hover:bg-[#FF0000] hover:text-white transition"><FaYoutube size={20} /></Link>
               <Link href="https://www.instagram.com/saifurs.com.bd/" target="_blank" className="bg-gray-800 p-2 rounded hover:bg-[#E4405F] hover:text-white transition"><FaInstagram size={20} /></Link>
             </div>
           </div>
@@ -37,7 +37,7 @@ const Footer = () => {
               <div className="flex items-center gap-3">
                 <FaPhone className="text-red-500" size={20} />
                 <div>
-                  <p className="text-white font-bold text-lg">01713432062</p>
+                  <p className="text-white font-bold text-lg">01806426003</p>
                   <p className="text-xs text-gray-500">সকাল ৯টা - রাত ৮টা</p>
                 </div>
               </div>
@@ -53,11 +53,9 @@ const Footer = () => {
 
         </div>
 
-        {/* Bottom Copyright */}
         <div className="mt-16 pt-8 border-t border-gray-800 text-center text-xs text-gray-500">
           <p>© 2026 Saifurs Publications Ltd | All Right Reserved</p>
         </div>
-
       </div>
     </footer>
   );

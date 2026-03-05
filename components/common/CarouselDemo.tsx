@@ -71,6 +71,7 @@ export function CarouselDemo({ data }: { data: CarouselItem[] }) {
                           alt={item.name}
                           width={200}
                           height={300}
+                          unoptimized={true}
                           className="object-contain h-[85%] w-auto transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>

@@ -18,6 +18,7 @@ interface OrderFormData {
     name: string;
     phone: string;
     address: string;
+    deliveryCharge: number
 }
 
 interface Product {
@@ -56,7 +57,11 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
     const total = subTotal + deliveryCharge;
 
     const onSubmit = async (formData: OrderFormData) => {
-        const res = await createOrderAction(formData, data)
+        const completeData = {
+            ...formData,
+            deliveryCharge: deliveryCharge
+        };
+        const res = await createOrderAction(completeData, data)
 
         if (res.success) {
             toast.success(res.message)
@@ -78,6 +83,7 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                                     <Image
                                         src={data?.coverImg || ""}
                                         alt={data?.slug || ""}
+                                        unoptimized={true}
                                         width={300}
                                         height={600}
                                         className="w-full h-full object-cover"
