@@ -12,6 +12,9 @@ export async function getSession(): Promise<DecodedIdToken | null> {
 
     if (!session) return null;
 
+    const userRole = session.role;
+    console.log(userRole)
+
     try {
         const decodedClaims = await adminAuth.verifySessionCookie(session, true);
         return decodedClaims;

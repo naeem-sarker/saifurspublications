@@ -27,16 +27,19 @@ services:
       - "127.0.0.1:3000:3000"
     env_file: .env
     volumes:
-      - saifurspublications_uploads:/app/public/uploads
+      - ./public/uploads:/app/public/uploads
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - saifurspublications-network
-    command: sh -c "pnpx prisma migrate deploy && pnpm start"
+    command: >
+      sh -c "mkdir -p public/uploads && 
+             chmod -R 775 public/uploads && 
+             pnpx prisma migrate deploy && 
+             pnpm start"
 
 networks:
   saifurspublications-network:
 volumes:
   saifurspublications_postgres_data:
-  saifurspublications_uploads:

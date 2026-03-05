@@ -13,6 +13,7 @@ export default async function Page({
   children: React.ReactNode;
 }>) {
   const session = await getSession();
+  console.log(session)
 
   if (!session) redirect("/")
   return (
