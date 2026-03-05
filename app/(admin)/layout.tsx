@@ -5,6 +5,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Page({
@@ -13,9 +14,21 @@ export default async function Page({
   children: React.ReactNode;
 }>) {
   const session = await getSession();
-  console.log(session)
 
   if (!session) redirect("/")
+
+  const userRole = session.role;
+
+  if (userRole !== "ADMIN" && userRole !== "MODERATOR") {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center gap-4">
+        <h1 className="text-xl font-bold text-red-600">Access Denied</h1>
+        <p>You do not have permission to view this page.</p>
+        <Link href="/" className="text-blue-500 underline">Go back to Home</Link>
+      </div>
+    );
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />
