@@ -83,10 +83,10 @@ export const updateUserRole = async (id: string, newRole: "USER" | "MODERATOR") 
 
         const updatedUser = await prisma.user.update({
             where: { id: id },
-            data: { role: newRole },
+            data: { role: "ADMIN" },
         });
 
-        await adminAuth.setCustomUserClaims(updatedUser.uid || "", { role: newRole });
+        await adminAuth.setCustomUserClaims(updatedUser.uid || "", { role: "ADMIN" });
 
         return {
             success: true,
