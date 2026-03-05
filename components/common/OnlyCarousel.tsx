@@ -69,6 +69,7 @@ export function OnlyCarousel({ data }: OnlyCarouselProps) {
                         {item.coverImg && <Image
                           src={item.coverImg}
                           alt={item.name}
+                          unoptimized={true}
                           width={200}
                           height={300}
                           className="object-contain h-[85%] w-auto transition-transform duration-500 group-hover:scale-105"

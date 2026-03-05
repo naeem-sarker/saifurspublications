@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { getHerosFromPublic } from '@/actions/herosActions';
 import { getProductsFromPublic } from '@/actions/productActions'
 import { CarouselDemo } from '@/components/common/CarouselDemo';

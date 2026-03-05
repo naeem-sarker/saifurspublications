@@ -62,6 +62,7 @@ export default function HeroSectionImageOnly({ data }: { data: Offer[] }) {
                                 <Image
                                     src={item.image}
                                     alt="Offer Banner"
+                                    unoptimized={true}
                                     width={1280}
                                     height={400}
                                     className="w-full h-auto object-contain"
