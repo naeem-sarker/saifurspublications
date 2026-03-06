@@ -123,21 +123,18 @@ export const getOrders = async (page: number = 1, limit: number = 10) => {
 
 export const getOrderBySlug = async (id: string) => {
     try {
-        // ১. আগে অর্ডার এবং আইটেমগুলো নিয়ে আসা
         const order = await prisma.order.findUnique({
             where: { id: id },
             include: {
                 user: true,
-                orderItems: true // এখানে শুধু productId আসবে, product details আসবে না
+                orderItems: true
             }
         });
 
         if (!order) return { success: false, message: 'Order not found' };
 
-        // ২. সব আইটেমের productId গুলোর একটি লিস্ট করা
         const productIds = order.orderItems.map(item => item.productId);
 
-        // ৩. Product টেবিল থেকে ঐ আইডিগুলোর নাম এবং ইমেজ একবারে নিয়ে আসা
         const products = await prisma.product.findMany({
             where: {
                 id: { in: productIds }
@@ -149,14 +146,15 @@ export const getOrderBySlug = async (id: string) => {
             }
         });
 
-        // ৪. অর্ডার আইটেমগুলোর সাথে প্রোডাক্টের তথ্য মিলিয়ে দেওয়া (Map করা)
         const orderWithProducts = {
             ...order,
             orderItems: order.orderItems.map(item => ({
                 ...item,
-                product: products.find(p => p.id === item.productId) // ম্যানুয়ালি কানেক্ট করা
+                product: products.find(p => p.id === item.productId)
             }))
         };
+
+        
 
         return {
             success: true,

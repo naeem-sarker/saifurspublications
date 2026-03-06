@@ -56,7 +56,7 @@ const OrderDetails = async ({
         },
         orderItems: orderItems.map((item: any) => ({
             product: {
-                name: item.product?.name || "বইয়ের নাম নেই"
+                name: item.product?.name || "Book not found"
             },
             quantity: item.quantity,
             price: item.price
@@ -93,7 +93,7 @@ const OrderDetails = async ({
 
                     <div className="flex gap-3">
                         <InvoiceButton order={invoiceData} />
-                        <PricingEdit order={res.data} />
+                        <PricingEdit order={res.data} key={res.data.orderItems.length + res.data.totalAmount} />
                         <AddItemModal orderId={id} />
                         <OrderActions orderId={id} currentStatus={status} />
                     </div>

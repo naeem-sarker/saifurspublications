@@ -85,7 +85,7 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                             <div className="w-full md:w-1/3 flex flex-col gap-4">
                                 <div className="relative aspect-[2/3] bg-gray-200 rounded-lg overflow-hidden shadow-md">
                                     <Image
-                                        src={data?.coverImg || ""}
+                                        src={`/api/${data?.coverImg || ""}`}
                                         alt={data?.slug || ""}
                                         unoptimized={true}
                                         width={300}
@@ -294,7 +294,7 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                         <div className="flex-1 bg-gray-200 relative">
                             {data?.pdfUrl ? (
                                 <iframe
-                                    src={`${data?.pdfUrl}#toolbar=0`}
+                                    src={`/api/${data?.pdfUrl}#toolbar=0`}
                                     className="w-full h-full"
                                     title="Book Preview"
                                 >

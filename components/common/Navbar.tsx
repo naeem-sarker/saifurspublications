@@ -18,6 +18,8 @@ import LoginModal from './LoginModal';
 const Navbar = () => {
     const { user, logOut, role } = useAuth();
 
+    console.log(role, "role")
+
     const isAdminOrModerator = role === "ADMIN" || role === "MODERATOR";
 
     return (

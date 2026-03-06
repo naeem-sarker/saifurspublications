@@ -24,26 +24,27 @@ export async function getSession(): Promise<DecodedIdToken | null> {
 export async function createSession(idToken: string) {
     try {
         const decodedToken = await adminAuth.verifyIdToken(idToken);
-        const firebaseUid = decodedToken.uid;
+        const { uid, email, name, picture } = decodedToken;
 
         let user = await prisma.user.findUnique({
-            where: { uid: firebaseUid },
+            where: { uid: uid },
+            select: { role: true }
         });
-
-        const { uid, email, name, picture } = decodedToken;
 
         if (!user) {
             user = await syncUserWithDB({ uid, email, name, picture })
         }
 
-        await adminAuth.setCustomUserClaims(firebaseUid, { role: user.role });
+        const expiresIn = 60 * 60 * 24 * 14 * 1000;
 
-        const expiresIn = 60 * 60 * 24 * 5 * 1000;
-        const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn });
+        const [sessionCookie] = await Promise.all([
+            adminAuth.createSessionCookie(idToken, { expiresIn }),
+            adminAuth.setCustomUserClaims(uid, { role: user.role })
+        ]);;
 
         const cookieStore = await cookies();
         cookieStore.set("__session", sessionCookie, {
-            maxAge: expiresIn,
+            maxAge: expiresIn / 1000,
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             path: "/",

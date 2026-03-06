@@ -60,7 +60,7 @@ export default function HeroSectionImageOnly({ data }: { data: Offer[] }) {
                             <Link href={item.url}
                             >
                                 <Image
-                                    src={item.image}
+                                    src={`/api/${item.image}`}
                                     alt="Offer Banner"
                                     unoptimized={true}
                                     width={1280}
