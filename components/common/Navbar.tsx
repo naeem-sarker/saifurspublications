@@ -18,6 +18,8 @@ import LoginModal from './LoginModal';
 const Navbar = () => {
     const { user, logOut, role } = useAuth();
 
+    const isAdminOrModerator = role === "ADMIN" || role === "MODERATOR";
+
     return (
         <nav className='sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm'>
             <div className='max-w-7xl mx-auto px-4 md:px-0 py-2'>
@@ -64,7 +66,7 @@ const Navbar = () => {
                                     <DropdownMenuSeparator />
 
                                     <DropdownMenuItem asChild className="cursor-pointer py-2 px-3">
-                                        {role === "ADMIN" ? <Link href="/admin" className="flex items-center gap-2">
+                                        {isAdminOrModerator ? <Link href="/admin" className="flex items-center gap-2">
                                             <User size={16} /> Dashboard
                                         </Link> : <Link href="/profile" className="flex items-center gap-2">
                                             <User size={16} /> Profile

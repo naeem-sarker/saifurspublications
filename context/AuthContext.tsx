@@ -8,7 +8,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
     user: User | null;
-    role: "ADMIN" | "CLIENT" | null;
+    role: "ADMIN" | "MODERATOR" | "USER" | null;
     logOut: () => Promise<void>;
 }
 
