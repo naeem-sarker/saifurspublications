@@ -60,10 +60,10 @@ export default function ProductGrid({ data }: ProductGridProps) {
                   <Link href={`/products/${item.slug}`} className="block">
                     <div className="flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden transition-colors">
                       {item.coverImg && <Image
-                        src={`/api/${item.coverImg}`}
+                        src={`/api${item.coverImg}`}
                         alt={item.name}
-                        width={250}
-                        height={350}
+                        width={200}
+                        height={300}
                         className="object-contain h-[85%] w-auto transition-transform duration-500 group-hover:scale-105"
                       />}
                     </div>

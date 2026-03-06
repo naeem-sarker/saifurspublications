@@ -67,7 +67,7 @@ export function CarouselDemo({ data }: { data: CarouselItem[] }) {
                     <Link href={`/products/${item.slug}`} className="block">
                       <div className="flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden transition-colors">
                         <Image
-                          src={`/api/${item.coverImg}`}
+                          src={`/api${item.coverImg}`}
                           alt={item.name}
                           width={200}
                           height={300}

@@ -67,7 +67,7 @@ export function OnlyCarousel({ data }: OnlyCarouselProps) {
                     <Link href={`/products/${item.slug}`} className="block">
                       <div className="flex justify-center items-center h-[180px] md:h-[240px] relative overflow-hidden transition-colors">
                         {item.coverImg && <Image
-                          src={`/api/${item.coverImg}`}
+                          src={`/api${item.coverImg}`}
                           alt={item.name}
                           unoptimized={true}
                           width={200}
