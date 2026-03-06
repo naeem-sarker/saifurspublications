@@ -19,6 +19,18 @@ export async function generateMetadata(
     return {
         title: post?.data?.name,
         description: post?.data?.description,
+        openGraph: {
+            title: post?.data?.name,
+            description: post?.data?.description || "",
+            images: [
+                {
+                    url: post?.data?.coverImg || "",
+                    width: 800,
+                    height: 600,
+                    alt: post?.data?.name,
+                },
+            ],
+        },
     }
 }
 
