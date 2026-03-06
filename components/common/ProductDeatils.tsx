@@ -4,7 +4,6 @@ import { useState } from 'react';
 import {
     BookOpen,
     Eye,
-    Minus,
     CheckCircle,
     X,
 } from 'lucide-react';
@@ -86,7 +85,7 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                             <div className="w-full md:w-1/3 flex flex-col gap-4">
                                 <div className="relative aspect-[2/3] bg-gray-200 rounded-lg overflow-hidden shadow-md">
                                     <Image
-                                        src={`/api/${data?.coverImg || ""}`}
+                                        src={`/api${data?.coverImg || ""}`}
                                         alt={data?.slug || ""}
                                         unoptimized={true}
                                         width={300}
@@ -279,7 +278,7 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
             </div>
 
             {isPreviewOpen && data?.pdfUrl && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
                     <div className="bg-white w-full max-w-5xl h-[85vh] rounded-xl relative flex flex-col shadow-2xl overflow-hidden">
 
                         <div className="flex justify-between items-center p-3 bg-gray-100 border-b">
