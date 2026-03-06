@@ -24,7 +24,7 @@ const Authors = async () => {
                             <div className="flex justify-center mb-4">
                                 {author.avatarUrl ? (
                                     <Image
-                                        src={author.avatarUrl}
+                                        src={`/api/${author.avatarUrl}`}
                                         alt={author.name}
                                         width={96}
                                         height={96}

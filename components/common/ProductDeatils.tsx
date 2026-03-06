@@ -6,6 +6,7 @@ import {
     Eye,
     Minus,
     CheckCircle,
+    X,
 } from 'lucide-react';
 import Image from 'next/image';
 import { toBengaliNumber } from '@/lib/numberConvert';
@@ -287,19 +288,18 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                                 onClick={() => setIsPreviewOpen(false)}
                                 className="bg-red-100 text-red-600 hover:bg-red-600 hover:text-white p-2 rounded-full transition-all"
                             >
-                                <Minus size={20} className="rotate-45" />
+                                <X size={20} />
                             </button>
                         </div>
 
                         <div className="flex-1 bg-gray-200 relative">
                             {data?.pdfUrl ? (
-                                <iframe
-                                    src={`/api/${data?.pdfUrl}#toolbar=0`}
-                                    className="w-full h-full"
-                                    title="Book Preview"
-                                >
-                                    <p>আপনার ব্রাউজার পিডিএফ প্রিভিউ সাপোর্ট করছে না।</p>
-                                </iframe>
+                                <embed
+                                    src={`/api/${data.pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                                    type="application/pdf"
+                                    width="100%"
+                                    height="100%"
+                                />
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-full text-gray-500">
                                     <BookOpen size={48} className="mb-2 opacity-50" />
