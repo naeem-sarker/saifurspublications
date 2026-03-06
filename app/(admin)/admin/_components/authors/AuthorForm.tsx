@@ -92,7 +92,6 @@ export function AuthorForm({ initialData }: { initialData?: any }) {
                 <form id="author-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                        {/* Left Side: Inputs & Status */}
                         <div className="space-y-5">
                             <Controller
                                 name="name"
@@ -117,7 +116,6 @@ export function AuthorForm({ initialData }: { initialData?: any }) {
                                 )}
                             />
 
-                            {/* isActive Switch Section */}
                             <Controller
                                 name="isActive"
                                 control={form.control}
@@ -136,7 +134,6 @@ export function AuthorForm({ initialData }: { initialData?: any }) {
                             />
                         </div>
 
-                        {/* Right Side: Image Upload Block */}
                         <Controller
                             name="avatarUrl"
                             control={form.control}

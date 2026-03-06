@@ -15,6 +15,7 @@ export async function generateMetadata(
     const slug = (await params).slug
 
     const post = await getProductByPublic(slug)
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
     return {
         title: post?.data?.name,
@@ -24,7 +25,7 @@ export async function generateMetadata(
             description: post?.data?.description || "",
             images: [
                 {
-                    url: post?.data?.coverImg || "",
+                    url: `${baseUrl}/api/${post?.data?.coverImg}` || "",
                     width: 800,
                     height: 600,
                     alt: post?.data?.name,

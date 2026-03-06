@@ -150,7 +150,7 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
                             >
                                 {preview ? (
                                     <>
-                                        <Image src={preview} alt="Cover" fill className="object-cover" />
+                                        <Image src={preview.startsWith('data:') ? preview : `/api/${preview}`} alt="Cover" fill className="object-cover" />
                                         <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                                             <p className="text-white text-xs font-bold">Change Image</p>
                                         </div>
