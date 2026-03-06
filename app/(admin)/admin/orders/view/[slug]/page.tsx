@@ -85,8 +85,8 @@ const OrderDetails = async ({
                     <div>
                         <div className="flex items-center gap-3">
                             <h1 className="text-2xl font-black text-slate-900">অর্ডার ডিটেইলস</h1>
-                            <Badge 
-                                className="px-3 py-1 text-xs font-bold uppercase tracking-wider" 
+                            <Badge
+                                className="px-3 py-1 text-xs font-bold uppercase tracking-wider"
                                 variant={status === 'PENDING' ? 'outline' : 'default'}
                             >
                                 {status}
@@ -98,9 +98,9 @@ const OrderDetails = async ({
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="flex gap-3">
-                   <InvoiceButton order={invoiceData} />
+                    <InvoiceButton order={invoiceData} />
                     <PricingEdit order={res.data} />
                     <AddItemModal orderId={id} />
                     <OrderActions orderId={id} currentStatus={status} />

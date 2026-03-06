@@ -32,6 +32,18 @@ export type OrderData = {
 
 export const columns: ColumnDef<OrderData>[] = [
     {
+        accessorKey: "order.id",
+        header: "Order ID",
+        cell: ({ row }) => {
+            const id = row.original.id;
+            return (
+                <span style={{ color: "blue", fontWeight: "500" }}>
+                    #{id ? id.slice(-6).toUpperCase() : "N/A"}
+                </span>
+            );
+        }
+    },
+    {
         accessorKey: "user.name",
         header: "Name",
         cell: ({ row }) => row.original.user?.name || "N/A",
