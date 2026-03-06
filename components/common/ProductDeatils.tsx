@@ -37,6 +37,10 @@ interface Product {
         name: string;
         slug: string;
     }[];
+    categories: {
+        name: string;
+        slug: string;
+    }[];
 }
 
 interface ProductDetailsProps {
@@ -113,6 +117,10 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                                             {author?.name}{index < data.authors.length - 1 ? ', ' : ''}</span>)}
                                     </div>
                                     <div>
+                                        <span className="text-gray-600">ক্যাটাগরি: </span> {data?.categories.map((category, index) => <span key={category.slug} className='text-black font-semibold'>
+                                            {category?.name}{index < data.categories.length - 1 ? ', ' : ''}</span>)}
+                                    </div>
+                                    <div>
                                         <span className="text-gray-600">সংস্করণ: </span><span className='text-black font-semibold'>
                                             {toBengaliNumber(data?.edition ?? "")}</span>
                                     </div>
@@ -142,7 +150,7 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                                 <div className="space-y-3">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">আপনার নাম</label>
-                                        <input autoFocus {...register("name", {
+                                        <input {...register("name", {
                                             required: "আপনার নাম লিখুন",
                                             minLength: { value: 2, message: "নাম কমপক্ষে ২ অক্ষরের হতে হবে" }
                                         })}

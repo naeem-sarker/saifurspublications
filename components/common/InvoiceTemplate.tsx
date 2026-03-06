@@ -1,18 +1,17 @@
 import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
 
-// কালপুরুষ ফন্ট রেজিস্টার করা
 Font.register({
     family: 'Kalpurush',
-    src: '/fonts/Kalpurush.ttf', // আপনার public/fonts ফোল্ডারের পাথ
+    src: '/fonts/Kalpurush.ttf',
 });
 
 const styles = StyleSheet.create({
-    page: { 
-        padding: 25, 
-        fontSize: 10, 
-        fontFamily: 'Kalpurush', // ডিফল্ট ফন্ট কালপুরুষ সেট করা হলো
+    page: {
+        padding: 25,
+        fontSize: 10,
+        fontFamily: 'Kalpurush',
         color: '#2d3748',
-        backgroundColor: '#ffffff' 
+        backgroundColor: '#ffffff'
     },
     headerContainer: {
         flexDirection: 'row',
@@ -23,8 +22,8 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         marginBottom: 15,
     },
-    logo: { 
-        width: 90, 
+    logo: {
+        width: 48,
         height: 'auto'
     },
     companyMeta: {
@@ -104,68 +103,73 @@ const styles = StyleSheet.create({
 
 export const InvoiceDocument = ({ order }: { order: any }) => (
     <Document>
-        <Page size="A5" orientation="landscape" style={styles.page}>
-            {/* Header Area */}
+        <Page size="A4" style={styles.page}>
             <View style={styles.headerContainer}>
                 <View>
-                    <Image src="https://i.ibb.co/L6vV9tF/saifurs-logo.png" style={styles.logo} />
+                    <Image src={"/saifurs.png"} style={styles.logo} />
                 </View>
                 <View style={styles.companyMeta}>
-                    <Text style={styles.brandName}>সাইফুরস পাবলিকেশনস</Text>
-                    <Text style={styles.contactInfo}>ফোন: +৮৮০ ১৩২১-১৪৫৪৫৫</Text>
-                    <Text style={styles.contactInfo}>ওয়েব: www.saifurs.com</Text>
+                    <Text style={styles.brandName}>Saifurs Publications</Text>
+                    <Text style={styles.contactInfo}>Phone: 01806-426003</Text>
+                    <Text style={styles.contactInfo}>Website: www.saifurspublications.com</Text>
                 </View>
             </View>
 
-            {/* Customer & Order Data */}
             <View style={styles.infoGrid}>
                 <View style={styles.infoBox}>
-                    <Text style={styles.label}>বিল টু (Bill To):</Text>
-                    <Text style={styles.valueBold}>{order.user?.name}</Text>
-                    <Text style={{ marginTop: 2 }}>{order.shippingAddress}</Text>
-                    <Text>ফোন: {order.user?.phone}</Text>
+                    <Text style={styles.label}>Bill To:</Text>
+                    <Text style={styles.valueBold}>Name: {order.user?.name}</Text>
+                    <Text>Phone: {order.user?.phone}</Text>
+                    <Text style={{ marginTop: 2 }}>Address: {order.shippingAddress}</Text>
                 </View>
                 <View style={[styles.infoBox, { textAlign: 'right' }]}>
-                    <Text style={styles.label}>অর্ডার ডিটেইলস:</Text>
-                    <Text style={styles.valueBold}>ইনভয়েস #{order.id?.slice(-6).toUpperCase()}</Text>
-                    <Text>তারিখ: {new Date(order.createdAt).toLocaleDateString('bn-BD')}</Text>
-                    <Text>পেমেন্ট: ক্যাশ অন ডেলিভারি</Text>
+                    <Text style={styles.label}>Order Details:</Text>
+                    <Text style={styles.valueBold}>Invoice #{order.id?.slice(-6).toUpperCase()}</Text>
+                    <Text>
+                        Date: {new Date(order.createdAt).toLocaleString('en-GB', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                        })}
+                    </Text>
+                    <Text>Payment Method: Cash on Delivery</Text>
                 </View>
             </View>
 
-            {/* Table */}
             <View style={styles.table}>
                 <View style={styles.tableHeader}>
-                    <Text style={styles.colDesc}>বইয়ের বিবরণ</Text>
-                    <Text style={styles.colQty}>পরিমাণ</Text>
-                    <Text style={styles.colPrice}>মূল্য</Text>
-                    <Text style={styles.colTotal}>মোট</Text>
+                    <Text style={styles.colDesc}>Product Details</Text>
+                    <Text style={styles.colQty}>Quantity</Text>
+                    <Text style={styles.colPrice}>Price</Text>
+                    <Text style={styles.colTotal}>Total</Text>
                 </View>
-                
+
                 {order.orderItems?.map((item: any, index: number) => (
                     <View key={index} style={styles.tableRow}>
                         <Text style={styles.colDesc}>{item.product?.name}</Text>
                         <Text style={styles.colQty}>{item.quantity}</Text>
-                        <Text style={styles.colPrice}>{item.price} টাকা</Text>
-                        <Text style={styles.colTotal}>{item.price * item.quantity} টাকা</Text>
+                        <Text style={styles.colPrice}>{item.price} TK</Text>
+                        <Text style={styles.colTotal}>{item.price * item.quantity} TK</Text>
                     </View>
                 ))}
             </View>
 
-            {/* Final Amount */}
             <View style={styles.summaryContainer}>
                 <View style={styles.summaryBox}>
                     <View style={styles.summaryLine}>
-                        <Text>সাবটোটাল:</Text>
-                        <Text>{order.totalAmount - order.deliveryCharge} টাকা</Text>
+                        <Text>Sub Total:</Text>
+                        <Text>{order.totalAmount - order.deliveryCharge} TK</Text>
                     </View>
                     <View style={styles.summaryLine}>
-                        <Text>ডেলিভারি চার্জ:</Text>
-                        <Text>{order.deliveryCharge} টাকা</Text>
+                        <Text>Delivery Charge:</Text>
+                        <Text>{order.deliveryCharge} TK</Text>
                     </View>
                     <View style={[styles.summaryLine, styles.grandTotal]}>
-                        <Text>সর্বমোট প্রদেয়:</Text>
-                        <Text>{order.totalAmount} টাকা</Text>
+                        <Text>Total:</Text>
+                        <Text>{order.totalAmount} TK</Text>
                     </View>
                 </View>
             </View>

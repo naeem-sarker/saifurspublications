@@ -19,7 +19,7 @@ const Users = async ({
   return (
     <div>
       <div className='flex justify-between mb-4'>
-        <h1 className='text-2xl'>Users</h1>
+        <h1 className='text-2xl font-bold'>Users</h1>
       </div>
 
       <DataTable columns={columns} data={data} limit={limit} pageCount={res.meta?.totalPages || 1}

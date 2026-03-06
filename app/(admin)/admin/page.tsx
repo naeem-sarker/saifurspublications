@@ -20,8 +20,8 @@ const Dashboard = async () => {
 
     return (
         <div className="flex flex-1 flex-col gap-6">
-            <div className='flex justify-between mb-4'>
-                <h1 className='text-2xl'>Dashboard</h1>
+            <div className='flex justify-between'>
+                <h1 className='text-2xl font-bold'>Dashboard</h1>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -66,7 +66,7 @@ const Dashboard = async () => {
                             <TableBody>
                                 {ores?.data?.map((order) => (
                                     <TableRow key={order.id}>
-                                        <TableCell className="font-medium text-blue-600">{order.id}</TableCell>
+                                        <TableCell className="font-medium text-blue-600">#{order.id?.slice(-6).toUpperCase()}</TableCell>
                                         <TableCell>Naeem Sarker</TableCell>
                                         <TableCell className="hidden md:table-cell text-muted-foreground">IELTS</TableCell>
                                         <TableCell>{order.totalAmount}</TableCell>

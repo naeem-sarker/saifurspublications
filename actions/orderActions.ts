@@ -1,6 +1,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
+import { sfCreateOrder } from '@/lib/steadfast';
 import { revalidatePath } from 'next/cache';
 
 interface OrderFormData {
@@ -169,10 +170,16 @@ export const getOrderBySlug = async (id: string) => {
 
 export const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
-        await prisma.order.update({
+        const order = await prisma.order.update({
             where: { id: orderId },
-            data: { status: newStatus as any }
+            data: { status: newStatus as any },
+            include: { user: true }
         });
+
+        if (order.status === 'CONFIRMED') {
+            await sfCreateOrder(order);
+        }
+
         revalidatePath(`/admin/orders/view/${orderId}`);
         return { success: true };
     } catch (error) {
@@ -182,7 +189,6 @@ export const updateOrderStatus = async (orderId: string, newStatus: string) => {
 
 export const addItemToOrder = async (orderId: string, productId: string, quantity: number = 1) => {
     try {
-        // ১. প্রোডাক্টের দাম বের করা
         const product = await prisma.product.findUnique({
             where: { id: productId },
             select: { salePrice: true, regularPrice: true }
@@ -193,9 +199,21 @@ export const addItemToOrder = async (orderId: string, productId: string, quantit
         const price = product.salePrice > 0 ? product.salePrice : product.regularPrice;
         const lineTotal = price * quantity;
 
-        // ২. ট্রানজেকশন ব্যবহার করে আইটেম যোগ এবং টোটাল আপডেট একবারে করা
         await prisma.$transaction(async (tx) => {
-            // আইটেম যোগ করা
+            const existingItem = await tx.orderItem.findFirst({
+                where: {
+                    orderId: orderId,
+                    productId: productId,
+                },
+            });
+
+            if (existingItem) {
+                return {
+                    success: false,
+                    message: "This product is already in the order list."
+                };
+            }
+
             await tx.orderItem.create({
                 data: {
                     orderId,
@@ -205,7 +223,6 @@ export const addItemToOrder = async (orderId: string, productId: string, quantit
                 }
             });
 
-            // অর্ডারের totalAmount আপডেট করা
             await tx.order.update({
                 where: { id: orderId },
                 data: {
@@ -217,7 +234,7 @@ export const addItemToOrder = async (orderId: string, productId: string, quantit
         });
 
         revalidatePath(`/admin/orders/view/${orderId}`);
-        return { success: true, message: "আইটেম যোগ করা হয়েছে" };
+        return { success: true, message: "Item Added Successfully" };
     } catch (error: any) {
         return { success: false, message: error.message };
     }
@@ -226,7 +243,6 @@ export const addItemToOrder = async (orderId: string, productId: string, quantit
 export const updateOrderPricing = async (orderId: string, deliveryCharge: number, items: { id: string, price: number, quantity: number }[]) => {
     try {
         await prisma.$transaction(async (tx) => {
-            // ১. প্রতিটি আইটেম আপডেট করা
             for (const item of items) {
                 await tx.orderItem.update({
                     where: { id: item.id },
@@ -234,11 +250,9 @@ export const updateOrderPricing = async (orderId: string, deliveryCharge: number
                 });
             }
 
-            // ২. নতুন টোটাল ক্যালকুলেট করা
             const subTotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
             const newTotal = subTotal + deliveryCharge;
 
-            // ৩. অর্ডার আপডেট করা
             await tx.order.update({
                 where: { id: orderId },
                 data: {
@@ -252,5 +266,124 @@ export const updateOrderPricing = async (orderId: string, deliveryCharge: number
         return { success: true };
     } catch (error) {
         return { success: false, message: "Update failed" };
+    }
+}
+
+export async function searchProducts(query: string) {
+    if (!query || query.length < 2) return [];
+
+    try {
+        const products = await prisma.product.findMany({
+            where: {
+                name: {
+                    contains: query,
+                    mode: 'insensitive',
+                },
+            },
+            take: 5,
+            select: {
+                id: true,
+                name: true,
+                regularPrice: true,
+            }
+        });
+
+        return products;
+    } catch (error) {
+        console.error("Search Error:", error);
+        return [];
+    }
+}
+
+export async function deleteOrderItem(itemId: string, orderId: string) {
+    try {
+        return await prisma.$transaction(async (tx) => {
+
+            const itemToDelete = await tx.orderItem.findUnique({
+                where: { id: itemId },
+            });
+
+            if (!itemToDelete) {
+                return { success: false, message: "Item not found!" };
+            }
+
+            await tx.orderItem.delete({
+                where: { id: itemId }
+            });
+
+            const remainingItems = await tx.orderItem.findMany({
+                where: { orderId: orderId }
+            });
+
+
+            const newSubTotal = remainingItems.reduce((acc, item) => {
+                return acc + (item.price * item.quantity);
+            }, 0);
+
+            const order = await tx.order.findUnique({
+                where: { id: orderId },
+                select: { deliveryCharge: true }
+            });
+
+            const finalTotal = newSubTotal + (order?.deliveryCharge || 0);
+
+            await tx.order.update({
+                where: { id: orderId },
+                data: {
+                    totalAmount: finalTotal
+                }
+            });
+
+            revalidatePath(`/admin/orders/${orderId}`);
+
+            return { success: true, message: "Item removed and total updated!" };
+        });
+
+    } catch (error) {
+        console.error("Delete Error:", error);
+        return { success: false, message: "Failed to delete item" };
+    }
+}
+
+export async function updateOrderAddress(orderId: string, newAddress: string) {
+    try {
+        if (!newAddress || newAddress.trim() === "") {
+            throw new Error("Address cannot be empty");
+        }
+
+        await prisma.order.update({
+            where: { id: orderId },
+            data: {
+                shippingAddress: newAddress,
+            },
+        });
+
+        revalidatePath(`/admin/orders/view/${orderId}`);
+        return { success: true, message: "Delivery address updated successfully!" };
+    } catch (error: any) {
+        return { success: false, message: error.message || "Failed to update address" };
+    }
+}
+
+export async function updateCustomerDetails(userId: string, orderId: string, data: { name: string, phone: string }) {
+    try {
+        if (!data.name || !data.phone) {
+            throw new Error("Name and Phone are required");
+        }
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                name: data.name,
+                phone: data.phone,
+            },
+        });
+
+        revalidatePath(`/admin/orders/view/${orderId}`);
+
+        return { success: true, message: "Customer details updated!" };
+    } catch (error: any) {
+        console.error("Update Error:", error);
+        return { success: false, message: error.message || "Failed to update customer" };
     }
 }

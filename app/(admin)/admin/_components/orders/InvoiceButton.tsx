@@ -1,6 +1,6 @@
 "use client"
-import { PDFDownloadLink } from '@react-pdf/renderer';
 
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Button } from '@/components/ui/button';
 import { FileText, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -17,7 +17,7 @@ export default function InvoiceButton({ order }: { order: any }) {
             {({ loading }) => (
                 <Button variant="outline" className="flex items-center gap-2" disabled={loading}>
                     <FileText size={16} />
-                    {loading ? "লোডিং..." : "ইনভয়েস ডাউনলোড"}
+                    {loading ? "Downloading..." : "Download Invoice"}
                 </Button>
             )}
         </PDFDownloadLink>

@@ -22,7 +22,7 @@ const Authors = async ({
   return (
     <div>
       <div className='flex justify-between mb-4'>
-        <h1 className='text-2xl'>Authors</h1>
+        <h1 className='text-2xl font-bold'>Authors</h1>
 
         <Button asChild>
           <Link href="/admin/authors/add">Add Author</Link>

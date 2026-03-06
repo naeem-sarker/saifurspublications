@@ -301,6 +301,12 @@ export const getProductByPublic = async (slug: string) => {
                         name: true,
                         slug: true
                     }
+                },
+                categories: {
+                    select: {
+                        name: true,
+                        slug: true
+                    }
                 }
             }
         });

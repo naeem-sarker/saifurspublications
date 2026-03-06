@@ -24,7 +24,7 @@ const Products = async ({
   return (
     <div>
       <div className='flex justify-between mb-4'>
-        <h1 className='text-2xl'>Products</h1>
+        <h1 className='text-2xl font-bold'>Products</h1>
 
         <Button asChild>
           <Link href="/admin/products/add">Add Product</Link>
