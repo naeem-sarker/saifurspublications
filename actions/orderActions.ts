@@ -1,6 +1,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
+import { sfCreateOrder } from '@/lib/steadfast';
 import { revalidatePath } from 'next/cache';
 
 interface OrderFormData {
@@ -169,10 +170,16 @@ export const getOrderBySlug = async (id: string) => {
 
 export const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
-        await prisma.order.update({
+        const order = await prisma.order.update({
             where: { id: orderId },
-            data: { status: newStatus as any }
+            data: { status: newStatus as any },
+            include: { user: true }
         });
+
+        if (order.status === 'CONFIRMED') {
+            await sfCreateOrder(order);
+        }
+
         revalidatePath(`/admin/orders/view/${orderId}`);
         return { success: true };
     } catch (error) {
@@ -335,5 +342,48 @@ export async function deleteOrderItem(itemId: string, orderId: string) {
     } catch (error) {
         console.error("Delete Error:", error);
         return { success: false, message: "Failed to delete item" };
+    }
+}
+
+export async function updateOrderAddress(orderId: string, newAddress: string) {
+    try {
+        if (!newAddress || newAddress.trim() === "") {
+            throw new Error("Address cannot be empty");
+        }
+
+        await prisma.order.update({
+            where: { id: orderId },
+            data: {
+                shippingAddress: newAddress,
+            },
+        });
+
+        revalidatePath(`/admin/orders/view/${orderId}`);
+        return { success: true, message: "Delivery address updated successfully!" };
+    } catch (error: any) {
+        return { success: false, message: error.message || "Failed to update address" };
+    }
+}
+
+export async function updateCustomerDetails(userId: string, orderId: string, data: { name: string, phone: string }) {
+    try {
+        if (!data.name || !data.phone) {
+            throw new Error("Name and Phone are required");
+        }
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                name: data.name,
+                phone: data.phone,
+            },
+        });
+
+        revalidatePath(`/admin/orders/view/${orderId}`);
+
+        return { success: true, message: "Customer details updated!" };
+    } catch (error: any) {
+        console.error("Update Error:", error);
+        return { success: false, message: error.message || "Failed to update customer" };
     }
 }

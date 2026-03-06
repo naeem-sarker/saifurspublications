@@ -1,7 +1,3 @@
-import {
-    User,
-    Phone,
-} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
@@ -13,6 +9,8 @@ import AddItemModal from '../../../_components/orders/AddItemModal';
 import PricingEdit from '../../../_components/orders/PricingEditing';
 import InvoiceButton from '../../../_components/orders/InvoiceButton';
 import DeleteOrderItem from '../../../_components/orders/DeleteOrderItem';
+import EditAddressModal from '../../../_components/orders/EditAddressModal';
+import EditCustomerModal from '../../../_components/orders/EditCustomerModal';
 
 const OrderDetails = async ({
     params,
@@ -148,9 +146,12 @@ const OrderDetails = async ({
                         </div>
 
                         <div className="bg-white border rounded-2xl p-6 shadow-sm">
-                            <h2 className="font-bold flex items-center gap-2 mb-4 text-slate-800 text-lg">
-                                Delivery Address & Notes
-                            </h2>
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="font-bold flex items-center gap-2 text-slate-800 text-lg">
+                                    Delivery Address & Notes
+                                </h2>
+                                <EditAddressModal orderId={id} currentAddress={shippingAddress} />
+                            </div>
                             <div className="text-base text-slate-700 leading-relaxed bg-slate-50 p-5 rounded-2xl border border-dashed border-slate-200">
                                 {shippingAddress}
                             </div>
@@ -158,25 +159,54 @@ const OrderDetails = async ({
                     </div>
 
                     <div className="xl:col-span-1 space-y-6">
-                        <div className="bg-slate-900 text-white rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
-                            <div className="absolute -right-4 -top-4 bg-white/10 h-24 w-24 rounded-full blur-2xl group-hover:bg-white/20 transition-all"></div>
-                            <h2 className="font-bold flex items-center gap-2 mb-6 text-slate-400 text-xs uppercase tracking-[0.2em]">
-                                <User size={16} /> Customer Details
-                            </h2>
-                            <div className="space-y-6">
+                        <div className="bg-slate-900 text-white rounded-[2rem] p-8 shadow-2xl relative overflow-hidden group border border-slate-800">
+
+                            <div className="relative z-10 flex justify-between items-start mb-8">
                                 <div>
-                                    <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">Name</p>
-                                    <p className="text-xl font-bold">{user?.name || "N/A"}</p>
+                                    <h2 className="text-slate-400 text-[10px] uppercase tracking-[0.3em] font-black mb-1">
+                                        Customer Profile
+                                    </h2>
                                 </div>
-                                <div>
-                                    <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">Phone</p>
-                                    <Link href={`tel:${user?.phone}`} className="text-xl font-bold text-red-400 flex items-center gap-2 hover:underline">
-                                        <Phone size={18} /> {user?.phone}
-                                    </Link>
+                                <div className="bg-white/5 hover:bg-white/10 backdrop-blur-md rounded-xl p-1 transition-colors border border-white/10">
+                                    <EditCustomerModal
+                                        userId={user?.id}
+                                        orderId={id}
+                                        currentName={user?.name || ""}
+                                        currentPhone={user?.phone || ""}
+                                    />
                                 </div>
-                                <div>
-                                    <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">Created</p>
-                                    {format(user.createdAt, "dd MMM, yyyy")}, {format(user.createdAt, "hh:mm a")}
+                            </div>
+
+                            <div className="relative z-10 space-y-7">
+
+                                <div className="flex items-center gap-4 group/item">
+                                    <div>
+                                        <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Name</p>
+                                        <p className="text-lg font-bold tracking-tight text-slate-100 group-hover/item:text-white transition-colors">
+                                            {user?.name || "N/A"}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4 group/item">
+                                    <div>
+                                        <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Phone Number</p>
+                                        <Link
+                                            href={`tel:${user?.phone}`}
+                                            className="text-lg font-bold text-red-400 flex items-center gap-1.5 hover:text-red-300 transition-colors underline-offset-4 hover:underline"
+                                        >
+                                            {user?.phone || "N/A"}
+                                        </Link>
+                                    </div>
+                                </div>
+
+                                <div className="pt-4 border-t border-white/5">
+                                    <div className="flex items-center justify-between py-2 px-4 rounded-2xl bg-white/[0.03] border border-white/[0.05]">
+                                        <span className="text-[10px] text-slate-500 uppercase font-bold">Registered On</span>
+                                        <span className="text-xs font-medium text-slate-300">
+                                            {user?.createdAt ? format(new Date(user.createdAt), "dd MMM, yyyy") : "N/A"}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
