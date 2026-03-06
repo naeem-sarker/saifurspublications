@@ -12,6 +12,7 @@ import OrderActions from '../../../_components/orders/OrderActions';
 import AddItemModal from '../../../_components/orders/AddItemModal';
 import PricingEdit from '../../../_components/orders/PricingEditing';
 import InvoiceButton from '../../../_components/orders/InvoiceButton';
+import DeleteOrderItem from '../../../_components/orders/DeleteOrderItem';
 
 const OrderDetails = async ({
     params,
@@ -135,7 +136,11 @@ const OrderDetails = async ({
                                                     <p className="text-xs text-slate-400 uppercase font-bold">Total</p>
                                                     <p className="font-black text-slate-900 text-lg">{item.price * item.quantity} TK</p>
                                                 </div>
+                                                <div>
+                                                    <DeleteOrderItem itemId={item.id} orderId={id} />
+                                                </div>
                                             </div>
+
                                         </div>
                                     ))}
                                 </div>
