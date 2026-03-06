@@ -20,8 +20,8 @@ const Dashboard = async () => {
 
     return (
         <div className="flex flex-1 flex-col gap-6">
-            <div className='flex justify-between mb-4'>
-                <h1 className='text-2xl'>Dashboard</h1>
+            <div className='flex justify-between'>
+                <h1 className='text-2xl font-bold'>Dashboard</h1>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

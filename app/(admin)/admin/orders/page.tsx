@@ -22,7 +22,7 @@ const Orders = async ({
   return (
     <div>
       <div className='flex justify-between mb-4'>
-        <h1 className='text-2xl'>Orders</h1>
+        <h1 className='text-2xl font-bold'>Orders</h1>
 
         <Button asChild>
           <Link href="/admin/orders/add">Make Order</Link>

@@ -16,7 +16,7 @@ const Categories = async () => {
   return (
     <div>
       <div className='flex justify-between mb-4'>
-        <h1 className='text-2xl'>Categories</h1>
+        <h1 className='text-2xl font-bold'>Categories</h1>
 
         <Button asChild>
           <Link href="/admin/categories/add">Add Category</Link>

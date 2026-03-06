@@ -30,6 +30,7 @@ export type OrderData = {
     orderItems: any[];
 }
 
+
 export const columns: ColumnDef<OrderData>[] = [
     {
         accessorKey: "order.id",
@@ -65,13 +66,24 @@ export const columns: ColumnDef<OrderData>[] = [
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => {
-            const status = row.getValue("status") as string
-            const variant = status === "PENDING" ? "outline" : status === "DELIVERED" ? "default" : "destructive"
+            const status = row.getValue("status") as string;
+
+            const statusConfig: Record<string, { variant: "default" | "secondary" | "destructive" | "outline", label: string }> = {
+                PENDING: { variant: "outline", label: "Pending" },
+                CONFIRMED: { variant: "secondary", label: "Confirmed" },
+                SHIPPED: { variant: "secondary", label: "Shipped" },
+                DELIVERED: { variant: "default", label: "Delivered" },
+                CANCELLED: { variant: "destructive", label: "Cancelled" },
+                RETURN: { variant: "destructive", label: "Returned" },
+            };
+
+            const config = statusConfig[status] || { variant: "outline", label: status };
+
             return (
-                <Badge variant={variant} className="font-medium">
-                    {status}
+                <Badge variant={config.variant} className="font-medium capitalize">
+                    {config.label}
                 </Badge>
-            )
+            );
         },
     },
     {

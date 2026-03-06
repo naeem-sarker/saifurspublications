@@ -9,14 +9,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <>
       <GoogleTagManager gtmId="GTM-NXG4MQ83" />
-      <body>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        <FloatingContact />
-      </body>
-    </html>
+      <Navbar />
+      <main>{children}</main>
+      <Footer />
+      <FloatingContact />
+    </>
   );
 }
