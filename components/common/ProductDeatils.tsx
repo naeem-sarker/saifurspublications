@@ -99,13 +99,17 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                                     )}
                                 </div>
 
-                                <button
-                                    onClick={() => setIsPreviewOpen(true)}
-                                    className="w-full py-2.5 flex items-center justify-center gap-2 bg-red-50 text-red-600 font-semibold rounded-lg hover:bg-red-100 transition-colors border border-red-100"
-                                >
-                                    <Eye size={18} />
-                                    একটু পড়ে দেখুন
-                                </button>
+                                {
+                                    data.pdfUrl && <button
+                                        onClick={() => setIsPreviewOpen(true)}
+                                        className="w-full py-2.5 flex items-center justify-center gap-2 bg-red-50 text-red-600 font-semibold rounded-lg hover:bg-red-100 transition-colors border border-red-100"
+                                    >
+                                        <Eye size={18} />
+                                        একটু পড়ে দেখুন
+                                    </button>
+                                }
+
+
                             </div>
 
                             <div className="w-full md:w-2/3 flex flex-col jusit-center">
@@ -124,10 +128,14 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                                         <span className="text-gray-600">সংস্করণ: </span><span className='text-black font-semibold'>
                                             {toBengaliNumber(data?.edition ?? "")}</span>
                                     </div>
-                                    <div>
-                                        <span className="text-gray-600">পৃষ্ঠা: </span><span className='text-black font-semibold'>
-                                            {toBengaliNumber(data?.totalPage ?? 0)}</span>
-                                    </div>
+                                    {data?.totalPage && data.totalPage > 0 ? (
+                                        <div>
+                                            <span className="text-gray-600">পৃষ্ঠা: </span>
+                                            <span className='text-black font-semibold'>
+                                                {toBengaliNumber(data.totalPage)}
+                                            </span>
+                                        </div>
+                                    ) : null}
                                 </div>
 
                                 <div className="flex items-center items-end gap-3 mb-6">
