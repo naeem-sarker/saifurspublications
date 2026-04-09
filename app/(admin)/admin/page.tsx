@@ -67,7 +67,7 @@ const Dashboard = async () => {
                                 {ores?.data?.map((order) => (
                                     <TableRow key={order.id}>
                                         <TableCell className="font-medium text-blue-600">#{order.id?.slice(-6).toUpperCase()}</TableCell>
-                                        <TableCell>Naeem Sarker</TableCell>
+                                        <TableCell>{order.user.name}</TableCell>
                                         <TableCell className="hidden md:table-cell text-muted-foreground">IELTS</TableCell>
                                         <TableCell>{order.totalAmount}</TableCell>
                                         <TableCell>
