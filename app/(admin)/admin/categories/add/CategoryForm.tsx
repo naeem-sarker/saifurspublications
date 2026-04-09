@@ -19,8 +19,9 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { createCategory } from "@/actions/categoryActions"
+import { Loader2 } from "lucide-react"
 
 const formSchema = z.object({
     name: z.string(),
@@ -28,6 +29,8 @@ const formSchema = z.object({
 })
 
 export function CategoryForm() {
+    const [loading, setLoading] = React.useState(false)
+    const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -37,15 +40,22 @@ export function CategoryForm() {
     })
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
+        setLoading(true)
 
-        const res = await createCategory(data);
+        try {
+            const res = await createCategory(data);
 
-        if (res.success) {
-            toast.success(res.message)
-            form.reset()
-            redirect("/admin/categories")
-        } else {
-            toast.error(res.message)
+            if (res.success) {
+                toast.success(res.message)
+                form.reset()
+                router.push("/admin/categories")
+            } else {
+                toast.error(res.message)
+            }
+        } catch (error) {
+            toast.error("An error occurred while creating the category.")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -106,8 +116,9 @@ export function CategoryForm() {
                     <Button type="button" className="cursor-pointer" variant="outline" onClick={() => form.reset()}>
                         Reset
                     </Button>
-                    <Button type="submit" className="cursor-pointer" form="form-rhf-demo">
-                        Submit
+                    <Button disabled={loading} type="submit" className="cursor-pointer" form="form-rhf-demo">
+                        {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                        {loading ? "Submitting..." : "Submit"}
                     </Button>
                 </Field>
             </CardFooter>
