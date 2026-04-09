@@ -25,20 +25,30 @@ const Home = async () => {
     <div className='max-w-7xl mx-auto'>
       <HeroSectionImageOnly data={hData} />
 
-      <section className="py-10 px-4 md:px-0">
-        <SectionHeader title="জনপ্রিয় বইসমূহ" link="/products?sort=popular" />
-        <CarouselDemo data={popularRes.data || []} />
-      </section>
+      {
+        popularRes.data && popularRes.data.length > 0 && (
+          <section className="py-10 px-4 md:px-0">
+            <SectionHeader title="জনপ্রিয় বইসমূহ" link="/products?sort=popular" />
+            <CarouselDemo data={popularRes.data || []} />
+          </section>
+        )
+      }
 
-      <section className="py-10 px-4 md:px-0">
-        <SectionHeader title="ইংরেজি বইসমূহ" link="/products?sort=english" />
-        <OnlyCarousel data={englishRes.data || []} />
-      </section>
+      {
+        englishRes.data && englishRes.data.length > 0 && (
+          <section className="py-10 px-4 md:px-0">
+            <SectionHeader title="ইংরেজি বইসমূহ" link="/products?sort=english" />
+            <OnlyCarousel data={englishRes.data || []} />
+          </section>
+        )
+      }
 
-      <section className="py-10 px-4 md:px-0">
-        <SectionHeader title="একাডেমিক বইসমূহ" link="/products?sort=academic" />
-        <OnlyCarousel data={academicRes.data || []} />
-      </section>
+      {
+        academicRes.data && academicRes.data.length > 0 && (<section className="py-10 px-4 md:px-0">
+          <SectionHeader title="একাডেমিক বইসমূহ" link="/products?sort=academic" />
+          <OnlyCarousel data={academicRes.data || []} />
+        </section>)
+      }
     </div>
   )
 }

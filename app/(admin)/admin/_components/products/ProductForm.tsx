@@ -8,7 +8,8 @@ import * as z from "zod"
 import Image from "next/image"
 import {
     Upload, FileText, Star, TrendingUp,
-    CheckCircle2, Package, Layers
+    CheckCircle2, Package, Layers,
+    Loader2
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -50,6 +51,9 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
     const [preview, setPreview] = React.useState<string | null>(initialData?.coverImg || null)
     const fileInputRef = React.useRef<HTMLInputElement>(null)
     const pdfInputRef = React.useRef<HTMLInputElement>(null)
+    const [loading, setLoading] = React.useState(false);
+
+    console.log(initialData, "Initial Data")
 
 
     const formattedInitialData = React.useMemo(() => {
@@ -107,33 +111,41 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
     }
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
-        const formData = new FormData();
-        Object.entries(data).forEach(([key, value]) => {
-            if (key !== "authors" && key !== "categories" && key !== "pdfUrl") {
-                formData.append(key, String(value ?? ""));
+        setLoading(true);
+
+        try {
+            const formData = new FormData();
+            Object.entries(data).forEach(([key, value]) => {
+                if (key !== "authors" && key !== "categories" && key !== "pdfUrl") {
+                    formData.append(key, String(value ?? ""));
+                }
+            });
+
+            formData.append("authors", JSON.stringify(data.authors));
+            formData.append("categories", JSON.stringify(data.categories));
+
+            if (fileInputRef.current?.files?.[0]) {
+                formData.append("coverImg", fileInputRef.current.files[0]);
             }
-        });
+            if (pdfInputRef.current?.files?.[0]) {
+                formData.append("pdfUrl", pdfInputRef.current.files[0]);
+            }
 
-        formData.append("authors", JSON.stringify(data.authors));
-        formData.append("categories", JSON.stringify(data.categories));
+            const res = initialData
+                ? await updateProduct(initialData.id, formData)
+                : await createProduct(formData);
 
-        if (fileInputRef.current?.files?.[0]) {
-            formData.append("coverImg", fileInputRef.current.files[0]);
-        }
-        if (pdfInputRef.current?.files?.[0]) {
-            formData.append("pdfUrl", pdfInputRef.current.files[0]);
-        }
-
-        const res = initialData
-            ? await updateProduct(initialData.id, formData)
-            : await createProduct(formData);
-
-        if (res.success) {
-            toast.success(res.message)
-            router.push("/admin/products")
-            router.refresh()
-        } else {
-            toast.error(res.message)
+            if (res.success) {
+                toast.success(res.message)
+                router.push("/admin/products")
+                router.refresh()
+            } else {
+                toast.error(res.message)
+            }
+        } catch (error) {
+            toast.error("An error occurred while saving the product. Please try again.")
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -262,7 +274,7 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
                                             <div onClick={() => pdfInputRef.current?.click()} className="flex items-center justify-center gap-2 h-10 border rounded-xl bg-red-50 cursor-pointer text-red-600">
                                                 <FileText size={16} />
                                                 <span className="text-[10px] font-bold uppercase truncate px-2">
-                                                    {pdfInputRef.current?.files?.[0]?.name || (initialData?.pdfUrl ? "Current PDF Attached" : "Attach PDF")}
+                                                    {pdfInputRef.current?.files?.[0]?.name || (initialData?.pdfUrl ? <span>{initialData.pdfUrl.split('/').pop()}</span> : "Attach PDF")}
                                                 </span>
                                             </div>
                                             <input type="file" ref={pdfInputRef} hidden accept="application/pdf" />
@@ -294,7 +306,8 @@ export default function ProductForm({ initialData, authorsList, categoriesList }
                 <CardFooter className="flex justify-end gap-3 p-8 bg-muted/30 border-t">
                     <Button variant="outline" type="button" onClick={() => router.back()}>Cancel</Button>
                     <Button type="submit" className="rounded-full bg-primary px-12 font-bold">
-                        {initialData ? "Update Product" : "Save Product"}
+                        {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                        {loading ? (initialData ? "Updating..." : "Saving...") : (initialData ? "Update Product" : "Save Product")}
                     </Button>
                 </CardFooter>
             </Card>

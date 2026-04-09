@@ -165,7 +165,7 @@ export const getProductsFromPublic = async (filterType: string = "", categorySlu
 
 export const getProductBySlug = async (id: string) => {
     try {
-        const product = await prisma.product.findUnique({ where: { id } });
+        const product = await prisma.product.findUnique({ where: { id }, include: { authors: true, categories: true } });
 
         return {
             success: true,
