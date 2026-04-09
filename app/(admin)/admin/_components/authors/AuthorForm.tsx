@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
 import Image from "next/image"
-import { Upload, X } from "lucide-react"
+import { Loader2, Upload, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group"
 import { createAuthor, updateAuthor } from "@/actions/authorActions"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),
@@ -30,6 +30,8 @@ const formSchema = z.object({
 export function AuthorForm({ initialData }: { initialData?: any }) {
     const [preview, setPreview] = React.useState<string | null>(initialData?.avatarUrl || null)
     const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const [loading, setLoading] = React.useState(false);
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -64,25 +66,33 @@ export function AuthorForm({ initialData }: { initialData?: any }) {
     }
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
-        const formData = new FormData();
-        formData.append("name", data.name);
-        formData.append("slug", data.slug);
-        formData.append("description", data.description || "");
-        formData.append("isActive", String(data.isActive));
+        setLoading(true);
 
-        if (fileInputRef.current?.files?.[0]) {
-            formData.append("image", fileInputRef.current.files[0]);
-        }
+        try {
+            const formData = new FormData();
+            formData.append("name", data.name);
+            formData.append("slug", data.slug);
+            formData.append("description", data.description || "");
+            formData.append("isActive", String(data.isActive));
 
-        const res = initialData ? await updateAuthor(initialData.id, formData) : await createAuthor(formData);
+            if (fileInputRef.current?.files?.[0]) {
+                formData.append("image", fileInputRef.current.files[0]);
+            }
 
-        if (res.success) {
-            toast.success(res.message)
-            form.reset()
-            setPreview(null)
-            redirect("/admin/authors")
-        } else {
-            toast.error(res.message)
+            const res = initialData ? await updateAuthor(initialData.id, formData) : await createAuthor(formData);
+
+            if (res.success) {
+                toast.success(res.message)
+                form.reset()
+                setPreview(null)
+                router.push("/admin/authors")
+            } else {
+                toast.error(res.message)
+            }
+        } catch (error) {
+            toast.error("An error occurred while saving the author.")
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -215,8 +225,12 @@ export function AuthorForm({ initialData }: { initialData?: any }) {
                     type="submit"
                     form="author-form"
                     className="min-w-[120px] shadow-md shadow-primary/20"
+                    disabled={loading}
                 >
-                    {initialData ? "Update Author" : "Save Author"}
+                    {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {
+                        loading ? (initialData ? "Update..." : "Saving...") : (initialData ? "Update Author" : "Save Author")
+                    }
                 </Button>
             </CardFooter>
         </Card>

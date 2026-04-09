@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button'
-import { Link } from 'lucide-react'
 import { getAuthors } from '@/actions/authorActions'
 import { getCategories } from '@/actions/categoryActions'
 import ProductForm from '../../_components/products/ProductForm'
+import Link from 'next/link'
 
 const AddProduct = async () => {
     const res = await getAuthors();
