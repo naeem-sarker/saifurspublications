@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
-import { Link } from 'lucide-react'
 import { CategoryForm } from './CategoryForm'
+import Link from 'next/link'
 
 const AddCategory = () => {
     return (
@@ -9,7 +9,7 @@ const AddCategory = () => {
                 <h1 className='text-2xl'>Add Category</h1>
 
                 <Button asChild>
-                    <Link href="/categories">Back</Link>
+                    <Link href="/admin/categories">Back</Link>
                 </Button>
             </div>
 
