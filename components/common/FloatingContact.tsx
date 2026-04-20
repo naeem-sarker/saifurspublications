@@ -13,7 +13,7 @@ const FloatingContact = () => {
                 </span>
 
                 <Link
-                    href="tel:+8801806426003"
+                    href="tel:+8809647222000"
                     className="bg-zinc-900 hover:bg-blue-600 w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/10 transition-all duration-300 hover:-translate-y-1 active:scale-90"
                 >
                     <Phone className="h-5 w-5 text-white" strokeWidth={2.5} />
