@@ -13,7 +13,7 @@ const FloatingContact = () => {
                 </span>
 
                 <Link
-                    href="tel:+8809647222000"
+                    href="tel:+8801713432061"
                     className="bg-zinc-900 hover:bg-blue-600 w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/10 transition-all duration-300 hover:-translate-y-1 active:scale-90"
                 >
                     <Phone className="h-5 w-5 text-white" strokeWidth={2.5} />
@@ -28,7 +28,7 @@ const FloatingContact = () => {
                 <div className="absolute inset-0 w-12 h-12 bg-green-500/20 rounded-2xl animate-ping group-hover:hidden" />
 
                 <Link
-                    href="https://wa.me/+8801806426003"
+                    href="https://wa.me/+8801713432061"
                     className="bg-[#25D366] hover:bg-[#20ba59] w-12 h-12 rounded-2xl flex items-center justify-center shadow-[0_8px_30px_rgb(37,211,102,0.3)] transition-all duration-300 hover:-translate-y-1 active:scale-90 relative z-10"
                     target="_blank"
                 >
