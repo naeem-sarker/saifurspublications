@@ -82,15 +82,15 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-7 space-y-6">
                         <div className="bg-white rounded-2xl flex flex-col md:flex-row gap-8">
-                            <div className="w-full md:w-1/3 flex flex-col gap-4">
-                                <div className="relative aspect-[2/3] bg-gray-200 rounded-lg overflow-hidden shadow-md">
+                            <div className="w-full md:w-1/3 lg:w-[400px] flex flex-col gap-4">
+                                <div className="relative aspect-square rounded-lg overflow-hidden shadow-sm">
                                     <Image
                                         src={`/api${data?.coverImg || ""}`}
                                         alt={data?.slug || ""}
                                         unoptimized={true}
-                                        width={300}
-                                        height={600}
-                                        className="w-full h-full object-cover"
+                                        width={400}
+                                        height={400}
+                                        className="w-full h-full object-contain"
                                     />
                                     {data?.discountRate && (
                                         <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
