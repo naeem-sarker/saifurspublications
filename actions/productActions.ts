@@ -296,6 +296,7 @@ export const getProductByPublic = async (slug: string) => {
                 regularPrice: true,
                 salePrice: true,
                 discountRate: true,
+                isDeliveryFree: true,
                 authors: {
                     select: {
                         name: true,

@@ -33,6 +33,7 @@ interface Product {
     pdfUrl: string | null;
     edition: string | null;
     totalPage: number | null;
+    isDeliveryFree: boolean;
     authors: {
         name: string;
         slug: string;
@@ -57,8 +58,8 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
         reValidateMode: 'onChange'
     });
 
-    const subTotal = data ? data.regularPrice * quantity : 0;
-    const total = subTotal + deliveryCharge;
+    const subTotal = data.salePrice > 0 ? data.salePrice * quantity : data.regularPrice * quantity;
+    const total = data.isDeliveryFree ? subTotal : subTotal + deliveryCharge;
 
     const onSubmit = async (formData: OrderFormData) => {
         const completeData = {
@@ -185,70 +186,72 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                                     </div>
                                 </div>
 
-                                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mt-2">
-                                    <p className="text-xs font-bold text-gray-700 uppercase mb-3 flex items-center gap-2">
-                                        ডেলিভারি এলাকা সিলেক্ট করুন:
-                                    </p>
+                                {
+                                    data.isDeliveryFree ? null : <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mt-2">
+                                        <p className="text-xs font-bold text-gray-700 uppercase mb-3 flex items-center gap-2">
+                                            ডেলিভারি এলাকা সিলেক্ট করুন:
+                                        </p>
 
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <label
-                                            className={`cursor-pointer relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-300 ${deliveryCharge === 60
-                                                ? 'border-red-500 bg-white shadow-md scale-[1.02]'
-                                                : 'border-gray-200 bg-white hover:border-red-200 text-gray-500'
-                                                }`}
-                                        >
-                                            <input
-                                                type="radio"
-                                                name="delivery"
-                                                checked={deliveryCharge === 60}
-                                                onChange={() => setDeliveryCharge(60)}
-                                                className="hidden"
-                                            />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <label
+                                                className={`cursor-pointer relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-300 ${deliveryCharge === 60
+                                                    ? 'border-red-500 bg-white shadow-md scale-[1.02]'
+                                                    : 'border-gray-200 bg-white hover:border-red-200 text-gray-500'
+                                                    }`}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="delivery"
+                                                    checked={deliveryCharge === 60}
+                                                    onChange={() => setDeliveryCharge(60)}
+                                                    className="hidden"
+                                                />
 
-                                            {deliveryCharge === 60 && (
-                                                <div className="absolute top-2 right-2 text-red-600">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                                </div>
-                                            )}
+                                                {deliveryCharge === 60 && (
+                                                    <div className="absolute top-2 right-2 text-red-600">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                    </div>
+                                                )}
 
-                                            <span className={`text-sm font-bold mb-1 ${deliveryCharge === 60 ? 'text-gray-900' : 'text-gray-600'}`}>
-                                                ঢাকার ভিতরে
-                                            </span>
-                                            <span className={`text-xs font-semibold px-2 py-1 rounded-full ${deliveryCharge === 60 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-500'}`}>
-                                                ৬০ টাকা
-                                            </span>
-                                        </label>
+                                                <span className={`text-sm font-bold mb-1 ${deliveryCharge === 60 ? 'text-gray-900' : 'text-gray-600'}`}>
+                                                    ঢাকার ভিতরে
+                                                </span>
+                                                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${deliveryCharge === 60 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-500'}`}>
+                                                    ৬০ টাকা
+                                                </span>
+                                            </label>
 
-                                        <label
-                                            className={`cursor-pointer relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-300 ${deliveryCharge === 90
-                                                ? 'border-red-500 bg-white shadow-md scale-[1.02]'
-                                                : 'border-gray-200 bg-white hover:border-red-200 text-gray-500'
-                                                }`}
-                                        >
-                                            <input
-                                                type="radio"
-                                                name="delivery"
-                                                checked={deliveryCharge === 90}
-                                                onChange={() => setDeliveryCharge(90)}
-                                                className="hidden"
-                                            />
+                                            <label
+                                                className={`cursor-pointer relative flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-300 ${deliveryCharge === 90
+                                                    ? 'border-red-500 bg-white shadow-md scale-[1.02]'
+                                                    : 'border-gray-200 bg-white hover:border-red-200 text-gray-500'
+                                                    }`}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="delivery"
+                                                    checked={deliveryCharge === 90}
+                                                    onChange={() => setDeliveryCharge(90)}
+                                                    className="hidden"
+                                                />
 
-                                            {deliveryCharge === 90 && (
-                                                <div className="absolute top-2 right-2 text-red-600">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                                </div>
-                                            )}
+                                                {deliveryCharge === 90 && (
+                                                    <div className="absolute top-2 right-2 text-red-600">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                    </div>
+                                                )}
 
-                                            <span className={`text-sm font-bold mb-1 ${deliveryCharge === 90 ? 'text-gray-900' : 'text-gray-600'}`}>
-                                                ঢাকার বাইরে
-                                            </span>
-                                            <span className={`text-xs font-semibold px-2 py-1 rounded-full ${deliveryCharge === 90 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-500'}`}>
-                                                ৯০ টাকা
-                                            </span>
-                                        </label>
+                                                <span className={`text-sm font-bold mb-1 ${deliveryCharge === 90 ? 'text-gray-900' : 'text-gray-600'}`}>
+                                                    ঢাকার বাইরে
+                                                </span>
+                                                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${deliveryCharge === 90 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-500'}`}>
+                                                    ৯০ টাকা
+                                                </span>
+                                            </label>
 
+                                        </div>
                                     </div>
-                                </div>
+                                }
 
 
                                 <div className="border-t border-dashed border-gray-300 pt-4 space-y-2">
@@ -258,7 +261,10 @@ const ProductDetails = ({ data }: ProductDetailsProps) => {
                                     </div>
                                     <div className="flex justify-between text-gray-600 text-sm">
                                         <span>ডেলিভারি চার্জ</span>
-                                        <span>৳{toBengaliNumber(deliveryCharge)}</span>
+                                        {
+                                            data.isDeliveryFree ? <span className="text-green-600 font-bold">ফ্রি</span> : <span>৳{toBengaliNumber(deliveryCharge)}</span>
+                                        }
+
                                     </div>
                                     <div className="flex justify-between text-gray-900 font-bold text-lg pt-2">
                                         <span>সর্বমোট</span>
